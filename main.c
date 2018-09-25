@@ -63,26 +63,11 @@ int main(int argc, char* argv[]) {
 int init_resources()
 {
   const VALUE rb_vertex_shader = rb_eval_string(
-    "Vismeit::Shader.new(                                 \n"
-    "  :vertex,                                           \n"
-    "  \"#version 120                             \\n\" \\\n"
-    "  \"attribute vec2 coord2d;                  \\n\" \\\n"
-    "  \"void main(void) {                        \\n\" \\\n"
-    "  \"  gl_Position = vec4(coord2d, 0.0, 1.0); \\n\" \\\n"
-    "  \"}                                        \\n\",  \n"
-    ")                                                    \n"
+    "Vismeit::Shader.new(:vertex, File.read('shader.vert'))"
   );
 
   const VALUE rb_fragment_shader = rb_eval_string(
-    "Vismeit::Shader.new(                                 \n"
-    "  :fragment,                                         \n"
-    "  \"#version 120                             \\n\" \\\n"
-    "  \"void main(void) {                        \\n\" \\\n"
-    "  \"  gl_FragColor[0] = 0.0;                 \\n\" \\\n"
-    "  \"  gl_FragColor[1] = 0.0;                 \\n\" \\\n"
-    "  \"  gl_FragColor[2] = 1.0;                 \\n\" \\\n"
-    "  \"}                                        \\n\" \\\n"
-    ")                                                    \n"
+    "Vismeit::Shader.new(:fragment, File.read('shader.frag'))"
   );
 
   rb_mVismeit_cShader_CDATA *vertex_shader_cdata;
