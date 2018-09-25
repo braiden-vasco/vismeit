@@ -18,18 +18,6 @@ struct Color3fAttribute
   GLfloat r, g, b;
 };
 
-struct Vertex3fColor3fAttribute
-{
-  struct Vertex3fAttribute vertex;
-  struct Color3fAttribute color;
-};
-
-static const struct Vertex3fColor3fAttribute triangle_attributes[] = {
-  {{ 0.0,  0.8, 0.0}, {1.0, 1.0, 0.0}},
-  {{-0.8, -0.8, 0.0}, {0.0, 0.0, 1.0}},
-  {{ 0.8, -0.8, 0.0}, {1.0, 0.0, 0.0}},
-};
-
 static const struct Vertex3fAttribute cube_vertex_attributes[] = {
   {-1.0, -1.0,  1.0},
   { 1.0, -1.0,  1.0},
@@ -78,11 +66,10 @@ static const GLushort cube_elements[] = {
 static GLuint program;
 static GLint attribute_coord3d, attribute_v_color;
 static GLint uniform_m_transform;
-static GLuint vbo_triangle, vbo_cube_vertices, vbo_cube_colors;
+static GLuint vbo_cube_vertices, vbo_cube_colors;
 static GLuint ibo_cube_elements;
 
 static int init_resources();
-static void free_resources();
 
 static void render();
 
@@ -95,7 +82,7 @@ int main(int argc, char* argv[]) {
   glutInitContextVersion(2, 0);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
   glutInitWindowSize(640, 480);
-  glutCreateWindow("My First Triangle");
+  glutCreateWindow("My First Cube");
 
   const GLenum glew_status = glewInit();
 
@@ -109,7 +96,6 @@ int main(int argc, char* argv[]) {
     glutMainLoop();
   }
 
-  free_resources();
   ruby_cleanup(0);
   return 0;
 }
@@ -149,19 +135,9 @@ int init_resources()
     return 0;
   }
 
-  glGenBuffers(1, &vbo_triangle);
   glGenBuffers(1, &vbo_cube_vertices);
   glGenBuffers(1, &vbo_cube_colors);
   glGenBuffers(1, &ibo_cube_elements);
-
-  glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
-
-  glBufferData(
-    GL_ARRAY_BUFFER,
-    sizeof(triangle_attributes),
-    triangle_attributes,
-    GL_STATIC_DRAW
-  );
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo_cube_vertices);
 
@@ -193,11 +169,6 @@ int init_resources()
   return 1;
 }
 
-void free_resources()
-{
-  glDeleteBuffers(1, &vbo_triangle);
-}
-
 void render()
 {
   glEnable(GL_BLEND);
@@ -220,28 +191,6 @@ void render()
 
   glEnableVertexAttribArray(attribute_coord3d);
   glEnableVertexAttribArray(attribute_v_color);
-
-  glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
-
-  glVertexAttribPointer(
-    attribute_coord3d,
-    2,
-    GL_FLOAT,
-    GL_FALSE,
-    sizeof(struct Vertex3fColor3fAttribute),
-    0
-  );
-
-  glVertexAttribPointer(
-    attribute_v_color,
-    3,
-    GL_FLOAT,
-    GL_FALSE,
-    sizeof(struct Vertex3fColor3fAttribute),
-    (GLvoid*)(sizeof(struct Vertex3fAttribute))
-  );
-
-  glDrawArrays(GL_TRIANGLES, 0, 3);
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo_cube_vertices);
 
