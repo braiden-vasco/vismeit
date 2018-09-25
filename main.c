@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ruby.h>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
@@ -42,6 +43,8 @@ static void onDisplay();
 static void free_resources();
 
 int main(int argc, char* argv[]) {
+  ruby_init();
+
   glutInit(&argc, argv);
   glutInitContextVersion(2, 0);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
@@ -61,6 +64,7 @@ int main(int argc, char* argv[]) {
   }
 
   free_resources();
+  ruby_cleanup(0);
   return 0;
 }
 
