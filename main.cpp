@@ -138,17 +138,17 @@ int init_resources()
     rb_str_new_cstr("v_color")
   );
 
-  rb_mVismeit_cProgram_CDATA *program_cdata;
-  rb_mVismeit_cAttrib_CDATA *coord3d_attrib_cdata;
-  rb_mVismeit_cAttrib_CDATA *v_color_attrib_cdata;
+  rb_mVismeit_cProgram_CDATA *cdata_program;
+  rb_mVismeit_cAttrib_CDATA  *cdata_coord3d_attrib;
+  rb_mVismeit_cAttrib_CDATA  *cdata_v_color_attrib;
 
-  Data_Get_Struct(rb_program, rb_mVismeit_cProgram_CDATA, program_cdata);
-  Data_Get_Struct(rb_coord3d_attrib, rb_mVismeit_cAttrib_CDATA, coord3d_attrib_cdata);
-  Data_Get_Struct(rb_v_color_attrib, rb_mVismeit_cAttrib_CDATA, v_color_attrib_cdata);
+  Data_Get_Struct(rb_program,        rb_mVismeit_cProgram_CDATA, cdata_program);
+  Data_Get_Struct(rb_coord3d_attrib, rb_mVismeit_cAttrib_CDATA,  cdata_coord3d_attrib);
+  Data_Get_Struct(rb_v_color_attrib, rb_mVismeit_cAttrib_CDATA,  cdata_v_color_attrib);
 
-  program = program_cdata->gl_id;
-  attribute_coord3d = coord3d_attrib_cdata->gl_id;
-  attribute_v_color = v_color_attrib_cdata->gl_id;
+  program           = cdata_program->gl_id;
+  attribute_coord3d = cdata_coord3d_attrib->gl_id;
+  attribute_v_color = cdata_v_color_attrib->gl_id;
 
   uniform_mvp = glGetUniformLocation(program, "mvp");
 
