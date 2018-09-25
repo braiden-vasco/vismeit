@@ -18,7 +18,7 @@ static GLuint vbo_triangle;
 static int init_resources();
 static void free_resources();
 
-static void onDisplay();
+static void render();
 
 int main(int argc, char* argv[]) {
   ruby_init();
@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
   }
 
   if (init_resources()) {
-    glutDisplayFunc(onDisplay);
+    glutDisplayFunc(render);
     glutMainLoop();
   }
 
@@ -88,7 +88,7 @@ void free_resources()
   glDeleteBuffers(1, &vbo_triangle);
 }
 
-void onDisplay()
+void render()
 {
   glClearColor(1.0, 1.0, 1.0, 1.0);
   glClear(GL_COLOR_BUFFER_BIT);
