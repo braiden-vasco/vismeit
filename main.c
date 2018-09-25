@@ -6,9 +6,9 @@
 #include "ext.h"
 
 static GLfloat triangle_data[] = {
-   0.0,  0.8,  1.0, 1.0, 0.0,
-  -0.8, -0.8,  0.0, 0.0, 1.0,
-   0.8, -0.8,  1.0, 0.0, 0.0,
+   0.0,  0.8, 0.0,  1.0, 1.0, 0.0,
+  -0.8, -0.8, 0.0,  0.0, 0.0, 1.0,
+   0.8, -0.8, 0.0,  1.0, 0.0, 0.0,
 };
 
 static GLuint program;
@@ -117,7 +117,7 @@ void render()
     2,
     GL_FLOAT,
     GL_FALSE,
-    5 * sizeof(GL_FLOAT),
+    6 * sizeof(GL_FLOAT),
     0
   );
 
@@ -126,8 +126,8 @@ void render()
     3,
     GL_FLOAT,
     GL_FALSE,
-    5 * sizeof(GL_FLOAT),
-    (GLvoid*)(2 * sizeof(GL_FLOAT))
+    6 * sizeof(GL_FLOAT),
+    (GLvoid*)(3 * sizeof(GL_FLOAT))
   );
 
   glDrawArrays(GL_TRIANGLES, 0, 3);
