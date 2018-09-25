@@ -1,4 +1,4 @@
-LIBS = -lglut -lGLEW -lGL $(shell pkg-config --libs ruby-2.3)
+LIBS = -lstdc++ -lglut -lGLEW -lGL $(shell pkg-config --libs ruby-2.3)
 CFLAGS = -Wall -Wextra $(shell pkg-config --cflags ruby-2.3)
 
 OBJS = main.o ext.o

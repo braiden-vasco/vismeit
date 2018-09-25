@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "ext.h"
@@ -31,6 +32,7 @@ static struct Vertex3fColor3fAttribute triangle_attributes[] = {
 
 static GLuint program;
 static GLint attribute_coord2d, attribute_v_color;
+static GLint uniform_m_transform;
 static GLuint vbo_triangle;
 
 static int init_resources();
@@ -94,6 +96,13 @@ int init_resources()
     return 0;
   }
 
+  uniform_m_transform = glGetUniformLocation(program, "m_transform");
+
+  if (uniform_m_transform == -1) {
+    fprintf(stderr, "Could not bind unform %s\n", "m_transform");
+    return 0;
+  }
+
   glGenBuffers(1, &vbo_triangle);
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
@@ -122,6 +131,11 @@ void render()
   glClear(GL_COLOR_BUFFER_BIT);
 
   glUseProgram(program);
+
+  glm::mat4 m_transform =
+    glm::rotate(glm::mat4(1.0), 0.25f, glm::vec3(0.0, 0.0, 1.0));
+
+  glUniformMatrix4fv(uniform_m_transform, 1, GL_FALSE, glm::value_ptr(m_transform));
 
   glEnableVertexAttribArray(attribute_coord2d);
   glEnableVertexAttribArray(attribute_v_color);
