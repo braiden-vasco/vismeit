@@ -122,24 +122,33 @@ int init_resources()
     "])                                                          \n"
   );
 
+  const VALUE rb_coord3d_attrib = rb_funcall(
+    rb_eval_string("Vismeit::Attrib"),
+    rb_intern("new"),
+    2,
+    rb_program,
+    rb_str_new_cstr("coord3d")
+  );
+
+  const VALUE rb_v_color_attrib = rb_funcall(
+    rb_eval_string("Vismeit::Attrib"),
+    rb_intern("new"),
+    2,
+    rb_program,
+    rb_str_new_cstr("v_color")
+  );
+
   rb_mVismeit_cProgram_CDATA *program_cdata;
+  rb_mVismeit_cAttrib_CDATA *coord3d_attrib_cdata;
+  rb_mVismeit_cAttrib_CDATA *v_color_attrib_cdata;
+
   Data_Get_Struct(rb_program, rb_mVismeit_cProgram_CDATA, program_cdata);
+  Data_Get_Struct(rb_coord3d_attrib, rb_mVismeit_cAttrib_CDATA, coord3d_attrib_cdata);
+  Data_Get_Struct(rb_v_color_attrib, rb_mVismeit_cAttrib_CDATA, v_color_attrib_cdata);
 
   program = program_cdata->gl_id;
-
-  attribute_coord3d = glGetAttribLocation(program, "coord3d");
-
-  if (attribute_coord3d == -1) {
-    fprintf(stderr, "Could not bind attribute %s\n", "coord3d");
-    return 0;
-  }
-
-  attribute_v_color = glGetAttribLocation(program, "v_color");
-
-  if (attribute_v_color == -1) {
-    fprintf(stderr, "Could not bind attribute %s\n", "v_color");
-    return 0;
-  }
+  attribute_coord3d = coord3d_attrib_cdata->gl_id;
+  attribute_v_color = v_color_attrib_cdata->gl_id;
 
   uniform_mvp = glGetUniformLocation(program, "mvp");
 
