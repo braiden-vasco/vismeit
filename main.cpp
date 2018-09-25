@@ -13,6 +13,9 @@ static const char *const window_title = "Vismeit";
 static const int initial_window_width  = 640;
 static const int initial_window_height = 480;
 
+static int screen_width = initial_window_width;
+static int screen_height = initial_window_height;
+
 struct Vertex3fAttribute
 {
   GLfloat x, y, z;
@@ -196,10 +199,6 @@ void on_display()
 
   glUseProgram(program);
 
-  glm::mat4 mvp = glm::mat4(1.0);
-
-  glUniformMatrix4fv(uniform_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
-
   glEnableVertexAttribArray(attribute_coord3d);
   glEnableVertexAttribArray(attribute_v_color);
 
@@ -239,10 +238,25 @@ void on_display()
 
 void on_reshape(const int width, const int height)
 {
+  screen_width = width;
+  screen_height = height;
+
   glViewport(0, 0, width, height);
 }
 
 void on_idle()
 {
   const float angle = glutGet(GLUT_ELAPSED_TIME) / 1000.0 * 45;
+  glm::vec3 axis_y(0, 1, 0);
+  glm::mat4 anim = glm::rotate(glm::mat4(1.0f), glm::radians(angle), axis_y);
+
+  glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0, -4.0));
+  glm::mat4 view = glm::lookAt(glm::vec3(0.0, 2.0, 0.0), glm::vec3(0.0, 0.0, -4.0), glm::vec3(0.0, 1.0, 0.0));
+  glm::mat4 projection = glm::perspective(45.0f, 1.0f*screen_width/screen_height, 0.1f, 10.0f);
+
+  glm::mat4 mvp = projection * view * model * anim;
+
+  glUseProgram(program);
+  glUniformMatrix4fv(uniform_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
+  glutPostRedisplay();
 }
