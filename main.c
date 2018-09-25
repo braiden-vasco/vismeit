@@ -1,3 +1,4 @@
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 int main()
@@ -21,6 +22,13 @@ int main()
   }
 
   glfwMakeContextCurrent(window);
+
+  if (glewInit() != GLEW_OK)
+  {
+    glfwDestroyWindow(window);
+    glfwTerminate();
+    return -1;
+  }
 
   glViewport(0, 0, 640, 480);
 
