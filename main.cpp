@@ -186,7 +186,7 @@ void render()
 
   glm::mat4 model = glm::mat4(1.0);
   glm::mat4 view = glm::mat4(1.0);
-  glm::mat4 projection = glm::mat4(1.0);
+  glm::mat4 projection = glm::perspective(45.0f, 1.0f * 640 / 480, 0.1f, 10.0f);
 
   glm::mat4 anim = glm::rotate(glm::mat4(1.0), 0.25f, glm::vec3(0.0, 0.0, 1.0));
 
