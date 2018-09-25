@@ -19,31 +19,6 @@ static void  rb_mVismeit_cShader_free(rb_mVismeit_cShader_CDATA *free_cdata);
 static VALUE rb_mVismeit_cShader_initialize(VALUE rb_self,
                                             VALUE rb_type, VALUE rb_source);
 
-static const char *const vs_source =
-#ifdef GL_ES_VERSION_2_0
-  "#version 100                             \n"  // OpenGL ES 2.0
-#else
-  "#version 120                             \n"  // OpenGL 2.1
-#endif
-  "attribute vec2 coord2d;                  \n"
-  "void main(void) {                        \n"
-  "  gl_Position = vec4(coord2d, 0.0, 1.0); \n"
-  "}                                        \n"
-;
-
-static const char *const fs_source =
-#ifdef GL_ES_VERSION_2_0
-  "#version 100             \n"  // OpenGL ES 2.0
-#else
-  "#version 120             \n"  // OpenGL 2.1
-#endif
-  "void main(void) {        \n"
-  "  gl_FragColor[0] = 0.0; \n"
-  "  gl_FragColor[1] = 0.0; \n"
-  "  gl_FragColor[2] = 1.0; \n"
-  "}                        \n"
-;
-
 static GLfloat triangle_vertices[] = {
   0.0, 0.8,
   -0.8, -0.8,
@@ -87,7 +62,7 @@ int main(int argc, char* argv[]) {
 
 int init_resources()
 {
-  const VALUE vertex_shader = rb_eval_string(
+  const VALUE rb_vertex_shader = rb_eval_string(
     "Vismeit::Shader.new(                                 \n"
     "  :vertex,                                           \n"
     "  \"#version 120                             \\n\" \\\n"
@@ -98,7 +73,7 @@ int init_resources()
     ")                                                    \n"
   );
 
-  const VALUE fragment_shader = rb_eval_string(
+  const VALUE rb_fragment_shader = rb_eval_string(
     "Vismeit::Shader.new(                                 \n"
     "  :fragment,                                         \n"
     "  \"#version 120                             \\n\" \\\n"
@@ -110,52 +85,23 @@ int init_resources()
     ")                                                    \n"
   );
 
-  GLint compile_ok = GL_FALSE, link_ok = GL_FALSE;
+  rb_mVismeit_cShader_CDATA *vertex_shader_cdata;
+  Data_Get_Struct(rb_vertex_shader,
+                  rb_mVismeit_cShader_CDATA, vertex_shader_cdata);
 
-  const GLuint vs = glCreateShader(GL_VERTEX_SHADER);
-  glShaderSource(vs, 1, &vs_source, NULL);
-  glCompileShader(vs);
+  rb_mVismeit_cShader_CDATA *fragment_shader_cdata;
+  Data_Get_Struct(rb_fragment_shader,
+                  rb_mVismeit_cShader_CDATA, fragment_shader_cdata);
 
-  GLint vertex_shader_log_length;
-  glGetShaderiv(vs, GL_INFO_LOG_LENGTH, &vertex_shader_log_length);
-
-  if (vertex_shader_log_length > 0) {
-    char vertex_shader_log[vertex_shader_log_length];
-    glGetShaderInfoLog(vs, vertex_shader_log_length, NULL, vertex_shader_log);
-    fprintf(stderr, vertex_shader_log);
-  }
-
-  glGetShaderiv(vs, GL_COMPILE_STATUS, &compile_ok);
-
-  if (!compile_ok) {
-    fprintf(stderr, "Error in vertex shader\n");
-    return 0;
-  }
-
-  const GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
-  glShaderSource(fs, 1, &fs_source, NULL);
-  glCompileShader(fs);
-
-  GLint fragment_shader_log_length;
-  glGetShaderiv(fs, GL_INFO_LOG_LENGTH, &fragment_shader_log_length);
-
-  if (fragment_shader_log_length > 0) {
-    char fragment_shader_log[fragment_shader_log_length];
-    glGetShaderInfoLog(fs, fragment_shader_log_length, NULL, fragment_shader_log);
-    fprintf(stderr, fragment_shader_log);
-  }
-
-  glGetShaderiv(fs, GL_COMPILE_STATUS, &compile_ok);
-
-  if (!compile_ok) {
-    fprintf(stderr, "Error in fragment shader\n");
-    return 0;
-  }
+  const GLuint vs = vertex_shader_cdata->gl_id;
+  const GLuint fs = fragment_shader_cdata->gl_id;
 
   program = glCreateProgram();
   glAttachShader(program, vs);
   glAttachShader(program, fs);
   glLinkProgram(program);
+
+  GLint link_ok = GL_FALSE;
   glGetProgramiv(program, GL_LINK_STATUS, &link_ok);
 
   if (!link_ok) {
