@@ -16,6 +16,10 @@ typedef struct {
   GLuint gl_id;
 } rb_mVismeit_cProgram_CDATA;
 
+typedef struct {
+  GLint gl_id;
+} rb_mVismeit_cAttrib_CDATA;
+
 extern void Init_vismeit();
 
 #ifdef __cplusplus
