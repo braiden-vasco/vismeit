@@ -98,56 +98,6 @@ void rb_mVismeit_cAttrib_free(rb_mVismeit_cAttrib_CDATA *const free_cdata)
   free(free_cdata);
 }
 
-VALUE rb_mVismeit_cProgram_initialize(
-  const VALUE rb_self,
-  const VALUE rb_shaders
-)
-{
-  Check_Type(rb_shaders, T_ARRAY);
-
-  rb_mVismeit_cProgram_CDATA *self_cdata;
-  Data_Get_Struct(rb_self, rb_mVismeit_cProgram_CDATA, self_cdata);
-
-  self_cdata->gl_id = glCreateProgram();
-
-  if (self_cdata->gl_id == 0)
-  {
-    rb_raise(rb_eRuntimeError, "can not generate program object");
-  }
-
-  const VALUE rb_shaders_count = rb_funcall(rb_shaders, rb_intern("count"), 0);
-
-  const long shaders_count = NUM2LONG(rb_shaders_count);
-
-  const VALUE rb_ivar_shaders = rb_ary_new_capa(shaders_count);
-
-  rb_ivar_set(rb_self, rb_intern("shaders"), rb_ivar_shaders);
-
-  for (long i = 0; i < shaders_count; ++i)
-  {
-    const VALUE rb_shader = rb_ary_entry(rb_shaders, i);
-
-    rb_ary_push(rb_ivar_shaders, rb_shader);
-
-    rb_mVismeit_cShader_CDATA *shader_cdata;
-    Data_Get_Struct(rb_shader, rb_mVismeit_cShader_CDATA, shader_cdata);
-
-    glAttachShader(self_cdata->gl_id, shader_cdata->gl_id);
-  }
-
-  glLinkProgram(self_cdata->gl_id);
-
-  GLint gl_link_status;
-  glGetProgramiv(self_cdata->gl_id, GL_LINK_STATUS, &gl_link_status);
-
-  if (gl_link_status == 0)
-  {
-    rb_raise(rb_eRuntimeError, "can not link program");
-  }
-
-  return rb_self;
-}
-
 VALUE rb_mVismeit_cShader_initialize(
   const VALUE rb_self,
   const VALUE rb_type,
@@ -195,6 +145,56 @@ VALUE rb_mVismeit_cShader_initialize(
   if (gl_compile_status == 0)
   {
     rb_raise(rb_eRuntimeError, "can not compile shader");
+  }
+
+  return rb_self;
+}
+
+VALUE rb_mVismeit_cProgram_initialize(
+  const VALUE rb_self,
+  const VALUE rb_shaders
+)
+{
+  Check_Type(rb_shaders, T_ARRAY);
+
+  rb_mVismeit_cProgram_CDATA *self_cdata;
+  Data_Get_Struct(rb_self, rb_mVismeit_cProgram_CDATA, self_cdata);
+
+  self_cdata->gl_id = glCreateProgram();
+
+  if (self_cdata->gl_id == 0)
+  {
+    rb_raise(rb_eRuntimeError, "can not generate program object");
+  }
+
+  const VALUE rb_shaders_count = rb_funcall(rb_shaders, rb_intern("count"), 0);
+
+  const long shaders_count = NUM2LONG(rb_shaders_count);
+
+  const VALUE rb_ivar_shaders = rb_ary_new_capa(shaders_count);
+
+  rb_ivar_set(rb_self, rb_intern("shaders"), rb_ivar_shaders);
+
+  for (long i = 0; i < shaders_count; ++i)
+  {
+    const VALUE rb_shader = rb_ary_entry(rb_shaders, i);
+
+    rb_ary_push(rb_ivar_shaders, rb_shader);
+
+    rb_mVismeit_cShader_CDATA *shader_cdata;
+    Data_Get_Struct(rb_shader, rb_mVismeit_cShader_CDATA, shader_cdata);
+
+    glAttachShader(self_cdata->gl_id, shader_cdata->gl_id);
+  }
+
+  glLinkProgram(self_cdata->gl_id);
+
+  GLint gl_link_status;
+  glGetProgramiv(self_cdata->gl_id, GL_LINK_STATUS, &gl_link_status);
+
+  if (gl_link_status == 0)
+  {
+    rb_raise(rb_eRuntimeError, "can not link program");
   }
 
   return rb_self;
