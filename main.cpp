@@ -106,8 +106,6 @@ int main(int argc, char* argv[]) {
     glutReshapeFunc(on_reshape);
     glutIdleFunc(on_idle);
 
-    on_reshape(initial_window_width, initial_window_height);
-
     glutMainLoop();
   }
 
@@ -186,6 +184,8 @@ int init_resources()
 
 void on_display()
 {
+  glViewport(0, 0, screen_width, screen_height);
+
   glClearColor(1.0, 1.0, 1.0, 1.0);
   glClearDepth(1.0);
 
@@ -240,8 +240,6 @@ void on_reshape(const int width, const int height)
 {
   screen_width = width;
   screen_height = height;
-
-  glViewport(0, 0, width, height);
 }
 
 void on_idle()
