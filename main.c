@@ -5,21 +5,15 @@
 
 #include "ext.h"
 
-static GLfloat triangle_vertices[] = {
-  0.0, 0.8,
-  -0.8, -0.8,
-  0.8, -0.8,
-};
-
-static GLfloat triangle_colors[] = {
-  1.0, 1.0, 0.0,
-  0.0, 0.0, 1.0,
-  1.0, 0.0, 0.0,
+static GLfloat triangle_data[] = {
+   0.0,  0.8,  1.0, 1.0, 0.0,
+  -0.8, -0.8,  0.0, 0.0, 1.0,
+   0.8, -0.8,  1.0, 0.0, 0.0,
 };
 
 static GLuint program;
 static GLint attribute_coord2d, attribute_v_color;
-static GLuint vbo_triangle_vertices, vbo_triangle_colors;
+static GLuint vbo_triangle;
 
 static int init_resources();
 static void free_resources();
@@ -84,24 +78,14 @@ int init_resources()
     return 0;
   }
 
-  glGenBuffers(1, &vbo_triangle_vertices);
-  glGenBuffers(1, &vbo_triangle_colors);
+  glGenBuffers(1, &vbo_triangle);
 
-  glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle_vertices);
-
-  glBufferData(
-    GL_ARRAY_BUFFER,
-    sizeof(triangle_vertices),
-    triangle_vertices,
-    GL_STATIC_DRAW
-  );
-
-  glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle_colors);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
 
   glBufferData(
     GL_ARRAY_BUFFER,
-    sizeof(triangle_colors),
-    triangle_colors,
+    sizeof(triangle_data),
+    triangle_data,
     GL_STATIC_DRAW
   );
 
@@ -110,8 +94,7 @@ int init_resources()
 
 void free_resources()
 {
-  glDeleteBuffers(1, &vbo_triangle_vertices);
-  glDeleteBuffers(1, &vbo_triangle_colors);
+  glDeleteBuffers(1, &vbo_triangle);
 }
 
 void render()
@@ -124,13 +107,28 @@ void render()
 
   glUseProgram(program);
 
-  glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle_vertices);
   glEnableVertexAttribArray(attribute_coord2d);
-  glVertexAttribPointer(attribute_coord2d, 2, GL_FLOAT, GL_FALSE, 0, 0);
-
-  glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle_colors);
   glEnableVertexAttribArray(attribute_v_color);
-  glVertexAttribPointer(attribute_v_color, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+  glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
+
+  glVertexAttribPointer(
+    attribute_coord2d,
+    2,
+    GL_FLOAT,
+    GL_FALSE,
+    5 * sizeof(GL_FLOAT),
+    0
+  );
+
+  glVertexAttribPointer(
+    attribute_v_color,
+    3,
+    GL_FLOAT,
+    GL_FALSE,
+    5 * sizeof(GL_FLOAT),
+    (GLvoid*)(2 * sizeof(GL_FLOAT))
+  );
 
   glDrawArrays(GL_TRIANGLES, 0, 3);
 
