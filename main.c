@@ -11,9 +11,15 @@ static GLfloat triangle_vertices[] = {
   0.8, -0.8,
 };
 
+static GLfloat triangle_colors[] = {
+  1.0, 1.0, 0.0,
+  0.0, 0.0, 1.0,
+  1.0, 0.0, 0.0,
+};
+
 static GLuint program;
-static GLint attribute_coord2d;
-static GLuint vbo_triangle;
+static GLint attribute_coord2d, attribute_v_color;
+static GLuint vbo_triangle, vbo_triangle_colors;
 
 static int init_resources();
 static void free_resources();
@@ -70,13 +76,32 @@ int init_resources()
     return 0;
   }
 
+  const char *const attribute_v_color_name = "v_color";
+  attribute_v_color = glGetAttribLocation(program, attribute_v_color_name);
+
+  if (attribute_v_color == -1) {
+    fprintf(stderr, "Could not bind attribute %s\n", attribute_v_color_name);
+    return 0;
+  }
+
   glGenBuffers(1, &vbo_triangle);
+  glGenBuffers(1, &vbo_triangle_colors);
+
   glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
 
   glBufferData(
     GL_ARRAY_BUFFER,
     sizeof(triangle_vertices),
     triangle_vertices,
+    GL_STATIC_DRAW
+  );
+
+  glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle_colors);
+
+  glBufferData(
+    GL_ARRAY_BUFFER,
+    sizeof(triangle_colors),
+    triangle_colors,
     GL_STATIC_DRAW
   );
 
@@ -100,8 +125,11 @@ void render()
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
   glEnableVertexAttribArray(attribute_coord2d);
-
   glVertexAttribPointer(attribute_coord2d, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+  glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle_colors);
+  glEnableVertexAttribArray(attribute_v_color);
+  glVertexAttribPointer(attribute_v_color, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
   glDrawArrays(GL_TRIANGLES, 0, 3);
 
