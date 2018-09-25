@@ -8,6 +8,10 @@ typedef struct {
   GLuint gl_id;
 } rb_mVismeit_cShader_CDATA;
 
+typedef struct {
+  GLuint gl_id;
+} rb_mVismeit_cProgram_CDATA;
+
 void Init_vismeit();
 
 #endif // __VISMEIT_H__
