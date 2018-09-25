@@ -4,6 +4,10 @@
 #include <ruby.h>
 #include <GL/glew.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
   GLuint gl_id;
 } rb_mVismeit_cShader_CDATA;
@@ -12,6 +16,10 @@ typedef struct {
   GLuint gl_id;
 } rb_mVismeit_cProgram_CDATA;
 
-void Init_vismeit();
+extern void Init_vismeit();
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
 #endif // __VISMEIT_H__
