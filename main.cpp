@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
 
   glutInit(&argc, argv);
   glutInitContextVersion(2, 0);
-  glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_ALPHA | GLUT_DEPTH);
   glutInitWindowSize(640, 480);
   glutCreateWindow("My First Cube");
 
