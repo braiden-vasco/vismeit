@@ -78,6 +78,7 @@ static int init_resources();
 
 static void on_display();
 static void on_reshape(int width, int height);
+static void on_idle();
 
 int main(int argc, char* argv[]) {
   ruby_init();
@@ -100,7 +101,10 @@ int main(int argc, char* argv[]) {
   if (init_resources()) {
     glutDisplayFunc(on_display);
     glutReshapeFunc(on_reshape);
+    glutIdleFunc(on_idle);
+
     on_reshape(initial_window_width, initial_window_height);
+
     glutMainLoop();
   }
 
@@ -236,4 +240,9 @@ void on_display()
 void on_reshape(const int width, const int height)
 {
   glViewport(0, 0, width, height);
+}
+
+void on_idle()
+{
+  const float angle = glutGet(GLUT_ELAPSED_TIME) / 1000.0 * 45;
 }
