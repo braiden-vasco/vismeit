@@ -16,7 +16,6 @@ static GLint attribute_coord2d;
 
 static int init_resources();
 static void onDisplay();
-static void free_resources();
 
 int main(int argc, char* argv[]) {
   ruby_init();
@@ -41,44 +40,23 @@ int main(int argc, char* argv[]) {
     glutMainLoop();
   }
 
-  free_resources();
   ruby_cleanup(0);
   return 0;
 }
 
 int init_resources()
 {
-  const VALUE rb_vertex_shader = rb_eval_string(
-    "Vismeit::Shader.new(:vertex, File.read('shader.vert'))"
+  const VALUE rb_program = rb_eval_string(
+    "Vismeit::Program.new([                                      \n"
+    "  Vismeit::Shader.new(:vertex, File.read('shader.vert')),   \n"
+    "  Vismeit::Shader.new(:fragment, File.read('shader.frag')), \n"
+    "])                                                          \n"
   );
 
-  const VALUE rb_fragment_shader = rb_eval_string(
-    "Vismeit::Shader.new(:fragment, File.read('shader.frag'))"
-  );
+  rb_mVismeit_cProgram_CDATA *program_cdata;
+  Data_Get_Struct(rb_program, rb_mVismeit_cProgram_CDATA, program_cdata);
 
-  rb_mVismeit_cShader_CDATA *vertex_shader_cdata;
-  Data_Get_Struct(rb_vertex_shader,
-                  rb_mVismeit_cShader_CDATA, vertex_shader_cdata);
-
-  rb_mVismeit_cShader_CDATA *fragment_shader_cdata;
-  Data_Get_Struct(rb_fragment_shader,
-                  rb_mVismeit_cShader_CDATA, fragment_shader_cdata);
-
-  const GLuint vs = vertex_shader_cdata->gl_id;
-  const GLuint fs = fragment_shader_cdata->gl_id;
-
-  program = glCreateProgram();
-  glAttachShader(program, vs);
-  glAttachShader(program, fs);
-  glLinkProgram(program);
-
-  GLint link_ok = GL_FALSE;
-  glGetProgramiv(program, GL_LINK_STATUS, &link_ok);
-
-  if (!link_ok) {
-    fprintf(stderr, "glLinkProgram:");
-    return 0;
-  }
+  program = program_cdata->gl_id;
 
   const char *const attribute_name = "coord2d";
   attribute_coord2d = glGetAttribLocation(program, attribute_name);
@@ -89,11 +67,6 @@ int init_resources()
   }
 
   return 1;
-}
-
-void free_resources()
-{
-  glDeleteProgram(program);
 }
 
 void onDisplay()
