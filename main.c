@@ -13,8 +13,11 @@ static GLfloat triangle_vertices[] = {
 
 static GLuint program;
 static GLint attribute_coord2d;
+static GLuint vbo_triangle;
 
 static int init_resources();
+static void free_resources();
+
 static void onDisplay();
 
 int main(int argc, char* argv[]) {
@@ -40,6 +43,7 @@ int main(int argc, char* argv[]) {
     glutMainLoop();
   }
 
+  free_resources();
   ruby_cleanup(0);
   return 0;
 }
@@ -66,7 +70,22 @@ int init_resources()
     return 0;
   }
 
+  glGenBuffers(1, &vbo_triangle);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
+
+  glBufferData(
+    GL_ARRAY_BUFFER,
+    sizeof(triangle_vertices),
+    triangle_vertices,
+    GL_STATIC_DRAW
+  );
+
   return 1;
+}
+
+void free_resources()
+{
+  glDeleteBuffers(1, &vbo_triangle);
 }
 
 void onDisplay()
@@ -75,16 +94,11 @@ void onDisplay()
   glClear(GL_COLOR_BUFFER_BIT);
 
   glUseProgram(program);
+
+  glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
   glEnableVertexAttribArray(attribute_coord2d);
 
-  glVertexAttribPointer(
-    attribute_coord2d,
-    2,
-    GL_FLOAT,
-    GL_FALSE,
-    0,
-    triangle_vertices
-  );
+  glVertexAttribPointer(attribute_coord2d, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
   glDrawArrays(GL_TRIANGLES, 0, 3);
 
