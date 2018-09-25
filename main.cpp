@@ -31,7 +31,7 @@ static struct Vertex3fColor3fAttribute triangle_attributes[] = {
 };
 
 static GLuint program;
-static GLint attribute_coord2d, attribute_v_color;
+static GLint attribute_coord3d, attribute_v_color;
 static GLint uniform_m_transform;
 static GLuint vbo_triangle;
 
@@ -82,10 +82,10 @@ int init_resources()
 
   program = program_cdata->gl_id;
 
-  attribute_coord2d = glGetAttribLocation(program, "coord2d");
+  attribute_coord3d = glGetAttribLocation(program, "coord3d");
 
-  if (attribute_coord2d == -1) {
-    fprintf(stderr, "Could not bind attribute %s\n", "coord2d");
+  if (attribute_coord3d == -1) {
+    fprintf(stderr, "Could not bind attribute %s\n", "coord3d");
     return 0;
   }
 
@@ -137,13 +137,13 @@ void render()
 
   glUniformMatrix4fv(uniform_m_transform, 1, GL_FALSE, glm::value_ptr(m_transform));
 
-  glEnableVertexAttribArray(attribute_coord2d);
+  glEnableVertexAttribArray(attribute_coord3d);
   glEnableVertexAttribArray(attribute_v_color);
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
 
   glVertexAttribPointer(
-    attribute_coord2d,
+    attribute_coord3d,
     2,
     GL_FLOAT,
     GL_FALSE,
@@ -162,6 +162,6 @@ void render()
 
   glDrawArrays(GL_TRIANGLES, 0, 3);
 
-  glDisableVertexAttribArray(attribute_coord2d);
+  glDisableVertexAttribArray(attribute_coord3d);
   glutSwapBuffers();
 }
