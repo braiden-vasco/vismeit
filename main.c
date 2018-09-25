@@ -28,8 +28,8 @@ static const char *const fs_source =
   "}                        \n"
 ;
 
-GLuint program;
-GLint attribute_coord2d;
+static GLuint program;
+static GLint attribute_coord2d;
 
 static int init_resources();
 static void onDisplay();
