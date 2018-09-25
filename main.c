@@ -1,13 +1,6 @@
-/**
- * From the OpenGL Programming wikibook: http://en.wikibooks.org/wiki/OpenGL_Programming
- * This file is in the public domain.
- * Contributors: Sylvain Beucler
- */
 #include <stdio.h>
 #include <stdlib.h>
-/* Use glew.h instead of gl.h to get all the GL prototypes declared */
 #include <GL/glew.h>
-/* Using the GLUT library for the base windowing setup */
 #include <GL/freeglut.h>
 
 static const char *const vs_source =
@@ -92,17 +85,15 @@ void onDisplay()
     -0.8, -0.8,
      0.8, -0.8,
   };
-  /* Describe our vertices array to OpenGL (it can't guess its format automatically) */
   glVertexAttribPointer(
-    attribute_coord2d, // attribute
-    2,                 // number of elements per vertex, here (x,y)
-    GL_FLOAT,          // the type of each element
-    GL_FALSE,          // take our values as-is
-    0,                 // no extra data between each position
-    triangle_vertices  // pointer to the C array
+    attribute_coord2d,
+    2,
+    GL_FLOAT,
+    GL_FALSE,
+    0,
+    triangle_vertices
   );
 
-  /* Push each element in buffer_vertices to the vertex shader */
   glDrawArrays(GL_TRIANGLES, 0, 3);
 
   glDisableVertexAttribArray(attribute_coord2d);
