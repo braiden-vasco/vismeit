@@ -19,7 +19,7 @@ static GLfloat triangle_colors[] = {
 
 static GLuint program;
 static GLint attribute_coord2d, attribute_v_color;
-static GLuint vbo_triangle, vbo_triangle_colors;
+static GLuint vbo_triangle_vertices, vbo_triangle_colors;
 
 static int init_resources();
 static void free_resources();
@@ -84,10 +84,10 @@ int init_resources()
     return 0;
   }
 
-  glGenBuffers(1, &vbo_triangle);
+  glGenBuffers(1, &vbo_triangle_vertices);
   glGenBuffers(1, &vbo_triangle_colors);
 
-  glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle_vertices);
 
   glBufferData(
     GL_ARRAY_BUFFER,
@@ -110,7 +110,8 @@ int init_resources()
 
 void free_resources()
 {
-  glDeleteBuffers(1, &vbo_triangle);
+  glDeleteBuffers(1, &vbo_triangle_vertices);
+  glDeleteBuffers(1, &vbo_triangle_colors);
 }
 
 void render()
@@ -123,7 +124,7 @@ void render()
 
   glUseProgram(program);
 
-  glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle_vertices);
   glEnableVertexAttribArray(attribute_coord2d);
   glVertexAttribPointer(attribute_coord2d, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
