@@ -10,15 +10,15 @@ extern "C" {
 
 typedef struct {
   GLuint gl_id;
-} rb_mVismeit_cShader_CDATA;
+} CDATA_mVismeit_cShader;
 
 typedef struct {
   GLuint gl_id;
-} rb_mVismeit_cProgram_CDATA;
+} CDATA_mVismeit_cProgram;
 
 typedef struct {
   GLint gl_id;
-} rb_mVismeit_cAttrib_CDATA;
+} CDATA_mVismeit_cAttrib;
 
 extern void Init_vismeit();
 

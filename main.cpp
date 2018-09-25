@@ -138,13 +138,13 @@ int init_resources()
     rb_str_new_cstr("v_color")
   );
 
-  rb_mVismeit_cProgram_CDATA *cdata_program;
-  rb_mVismeit_cAttrib_CDATA  *cdata_coord3d_attrib;
-  rb_mVismeit_cAttrib_CDATA  *cdata_v_color_attrib;
+  CDATA_mVismeit_cProgram *cdata_program;
+  CDATA_mVismeit_cAttrib  *cdata_coord3d_attrib;
+  CDATA_mVismeit_cAttrib  *cdata_v_color_attrib;
 
-  Data_Get_Struct(rb_program,        rb_mVismeit_cProgram_CDATA, cdata_program);
-  Data_Get_Struct(rb_coord3d_attrib, rb_mVismeit_cAttrib_CDATA,  cdata_coord3d_attrib);
-  Data_Get_Struct(rb_v_color_attrib, rb_mVismeit_cAttrib_CDATA,  cdata_v_color_attrib);
+  Data_Get_Struct(rb_program,        CDATA_mVismeit_cProgram, cdata_program);
+  Data_Get_Struct(rb_coord3d_attrib, CDATA_mVismeit_cAttrib,  cdata_coord3d_attrib);
+  Data_Get_Struct(rb_v_color_attrib, CDATA_mVismeit_cAttrib,  cdata_v_color_attrib);
 
   program           = cdata_program->gl_id;
   attribute_coord3d = cdata_coord3d_attrib->gl_id;
