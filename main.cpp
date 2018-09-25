@@ -77,6 +77,7 @@ static GLuint ibo_cube_elements;
 static int init_resources();
 
 static void render();
+static void on_reshape(int width, int height);
 
 int main(int argc, char* argv[]) {
   ruby_init();
@@ -98,6 +99,8 @@ int main(int argc, char* argv[]) {
 
   if (init_resources()) {
     glutDisplayFunc(render);
+    glutReshapeFunc(on_reshape);
+    on_reshape(initial_window_width, initial_window_height);
     glutMainLoop();
   }
 
@@ -228,4 +231,9 @@ void render()
   glDisableVertexAttribArray(attribute_v_color);
 
   glutSwapBuffers();
+}
+
+void on_reshape(const int width, const int height)
+{
+  glViewport(0, 0, width, height);
 }
