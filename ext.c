@@ -173,7 +173,7 @@ VALUE rb_mVismeit_cProgram_initialize(
 
   const VALUE rb_ivar_shaders = rb_ary_new_capa(shaders_count);
 
-  rb_ivar_set(rb_self, rb_intern("shaders"), rb_ivar_shaders);
+  rb_ivar_set(rb_self, rb_intern("@shaders"), rb_ivar_shaders);
 
   for (long i = 0; i < shaders_count; ++i)
   {
@@ -207,6 +207,8 @@ VALUE rb_mVismeit_cAttrib_initialize(
 )
 {
   Check_Type(rb_name, T_STRING);
+
+  rb_ivar_set(rb_self, rb_intern("@program"), rb_program);
 
   rb_mVismeit_cAttrib_CDATA *self_cdata;
   Data_Get_Struct(rb_self, rb_mVismeit_cAttrib_CDATA, self_cdata);
