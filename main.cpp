@@ -76,7 +76,7 @@ static GLuint ibo_cube_elements;
 
 static int init_resources();
 
-static void render();
+static void on_display();
 static void on_reshape(int width, int height);
 
 int main(int argc, char* argv[]) {
@@ -98,7 +98,7 @@ int main(int argc, char* argv[]) {
   }
 
   if (init_resources()) {
-    glutDisplayFunc(render);
+    glutDisplayFunc(on_display);
     glutReshapeFunc(on_reshape);
     on_reshape(initial_window_width, initial_window_height);
     glutMainLoop();
@@ -177,7 +177,7 @@ int init_resources()
   return 1;
 }
 
-void render()
+void on_display()
 {
   glClearColor(1.0, 1.0, 1.0, 1.0);
   glClearDepth(1.0);
