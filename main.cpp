@@ -8,6 +8,11 @@
 
 #include "ext.h"
 
+static const char *const window_title = "Vismeit";
+
+static const int initial_window_width  = 640;
+static const int initial_window_height = 480;
+
 struct Vertex3fAttribute
 {
   GLfloat x, y, z;
@@ -81,8 +86,8 @@ int main(int argc, char* argv[]) {
   glutInit(&argc, argv);
   glutInitContextVersion(2, 0);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_ALPHA | GLUT_DEPTH);
-  glutInitWindowSize(640, 480);
-  glutCreateWindow("My First Cube");
+  glutInitWindowSize(initial_window_width, initial_window_height);
+  glutCreateWindow(window_title);
 
   const GLenum glew_status = glewInit();
 
