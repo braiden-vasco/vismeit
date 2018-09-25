@@ -1,2 +1,2 @@
 all:
-	cc main.c -Wall -Wextra -lglfw -lGL -lGLEW
+	cc main.c -Wall -Wextra -lglut -lGLEW -lGL
