@@ -71,6 +71,16 @@ int init_resources()
   const GLuint vs = glCreateShader(GL_VERTEX_SHADER);
   glShaderSource(vs, 1, &vs_source, NULL);
   glCompileShader(vs);
+
+  GLint vertex_shader_log_length;
+  glGetShaderiv(vs, GL_INFO_LOG_LENGTH, &vertex_shader_log_length);
+
+  if (vertex_shader_log_length > 0) {
+    char vertex_shader_log[vertex_shader_log_length];
+    glGetShaderInfoLog(vs, vertex_shader_log_length, NULL, vertex_shader_log);
+    fprintf(stderr, vertex_shader_log);
+  }
+
   glGetShaderiv(vs, GL_COMPILE_STATUS, &compile_ok);
 
   if (!compile_ok) {
@@ -81,6 +91,16 @@ int init_resources()
   const GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
   glShaderSource(fs, 1, &fs_source, NULL);
   glCompileShader(fs);
+
+  GLint fragment_shader_log_length;
+  glGetShaderiv(fs, GL_INFO_LOG_LENGTH, &fragment_shader_log_length);
+
+  if (fragment_shader_log_length > 0) {
+    char fragment_shader_log[fragment_shader_log_length];
+    glGetShaderInfoLog(fs, fragment_shader_log_length, NULL, fragment_shader_log);
+    fprintf(stderr, fragment_shader_log);
+  }
+
   glGetShaderiv(fs, GL_COMPILE_STATUS, &compile_ok);
 
   if (!compile_ok) {
