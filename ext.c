@@ -4,14 +4,17 @@ static VALUE rb_mVismeit;
 static VALUE rb_mVismeit_cShader;
 static VALUE rb_mVismeit_cProgram;
 static VALUE rb_mVismeit_cAttrib;
+static VALUE rb_mVismeit_cUniform;
 
 static VALUE rb_mVismeit_cShader_alloc(VALUE rb_klass);
 static VALUE rb_mVismeit_cProgram_alloc(VALUE rb_klass);
 static VALUE rb_mVismeit_cAttrib_alloc(VALUE rb_klass);
+static VALUE rb_mVismeit_cUniform_alloc(VALUE rb_klass);
 
 static void rb_mVismeit_cShader_free(CDATA_mVismeit_cShader   *cdata_free);
 static void rb_mVismeit_cProgram_free(CDATA_mVismeit_cProgram *cdata_free);
 static void rb_mVismeit_cAttrib_free(CDATA_mVismeit_cAttrib   *cdata_free);
+static void rb_mVismeit_cUniform_free(CDATA_mVismeit_cUniform *cdata_free);
 
 static VALUE rb_mVismeit_cShader_initialize(VALUE rb_self,
                                             VALUE rb_type, VALUE rb_source);
@@ -20,6 +23,9 @@ static VALUE rb_mVismeit_cProgram_initialize(VALUE rb_self, VALUE rb_shaders);
 
 static VALUE rb_mVismeit_cAttrib_initialize(VALUE rb_self,
                                             VALUE rb_program, VALUE rb_name);
+
+static VALUE rb_mVismeit_cUniform_initialize(VALUE rb_self,
+                                             VALUE rb_program, VALUE rb_name);
 
 void Init_vismeit()
 {
@@ -34,9 +40,13 @@ void Init_vismeit()
   rb_mVismeit_cAttrib =
     rb_define_class_under(rb_mVismeit, "Attrib", rb_cObject);
 
+  rb_mVismeit_cUniform =
+    rb_define_class_under(rb_mVismeit, "Uniform", rb_cObject);
+
   rb_define_alloc_func(rb_mVismeit_cShader,  rb_mVismeit_cShader_alloc);
   rb_define_alloc_func(rb_mVismeit_cProgram, rb_mVismeit_cProgram_alloc);
   rb_define_alloc_func(rb_mVismeit_cAttrib,  rb_mVismeit_cAttrib_alloc);
+  rb_define_alloc_func(rb_mVismeit_cUniform, rb_mVismeit_cUniform_alloc);
 
   rb_define_method(rb_mVismeit_cShader, "initialize",
                    rb_mVismeit_cShader_initialize, 2);
@@ -46,6 +56,9 @@ void Init_vismeit()
 
   rb_define_method(rb_mVismeit_cAttrib, "initialize",
                    rb_mVismeit_cAttrib_initialize, 2);
+
+  rb_define_method(rb_mVismeit_cUniform, "initialize",
+                   rb_mVismeit_cUniform_initialize, 2);
 }
 
 VALUE rb_mVismeit_cShader_alloc(const VALUE rb_klass)
@@ -78,6 +91,16 @@ VALUE rb_mVismeit_cAttrib_alloc(const VALUE rb_klass)
                           rb_mVismeit_cAttrib_free, cdata_alloc);
 }
 
+VALUE rb_mVismeit_cUniform_alloc(const VALUE rb_klass)
+{
+  CDATA_mVismeit_cUniform *const cdata_alloc = ALLOC(CDATA_mVismeit_cUniform);
+
+  memset(cdata_alloc, 0, sizeof(CDATA_mVismeit_cUniform));
+
+  return Data_Wrap_Struct(rb_klass, NULL,
+                          rb_mVismeit_cUniform_free, cdata_alloc);
+}
+
 void rb_mVismeit_cShader_free(CDATA_mVismeit_cShader *const cdata_free)
 {
   glDeleteShader(cdata_free->gl_id);
@@ -91,6 +114,11 @@ void rb_mVismeit_cProgram_free(CDATA_mVismeit_cProgram *const cdata_free)
 }
 
 void rb_mVismeit_cAttrib_free(CDATA_mVismeit_cAttrib *const cdata_free)
+{
+  free(cdata_free);
+}
+
+void rb_mVismeit_cUniform_free(CDATA_mVismeit_cUniform *const cdata_free)
 {
   free(cdata_free);
 }
@@ -220,6 +248,34 @@ VALUE rb_mVismeit_cAttrib_initialize(
   if (cdata_self->gl_id == -1)
   {
     rb_raise(rb_eRuntimeError, "can not get attribute location");
+  }
+
+  return rb_self;
+}
+
+VALUE rb_mVismeit_cUniform_initialize(
+  const VALUE rb_self,
+  const VALUE rb_program,
+  VALUE rb_name
+)
+{
+  Check_Type(rb_name, T_STRING);
+
+  rb_ivar_set(rb_self, rb_intern("@program"), rb_program);
+
+  CDATA_mVismeit_cUniform *cdata_self;
+  Data_Get_Struct(rb_self, CDATA_mVismeit_cUniform, cdata_self);
+
+  CDATA_mVismeit_cProgram *cdata_program;
+  Data_Get_Struct(rb_program, CDATA_mVismeit_cProgram, cdata_program);
+
+  const char *const name = StringValueCStr(rb_name);
+
+  cdata_self->gl_id = glGetUniformLocation(cdata_program->gl_id, name);
+
+  if (cdata_self->gl_id == -1)
+  {
+    rb_raise(rb_eRuntimeError, "can not get uniform location");
   }
 
   return rb_self;
