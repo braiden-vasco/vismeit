@@ -80,19 +80,17 @@ int init_resources()
 
   program = program_cdata->gl_id;
 
-  const char *const attribute_name = "coord2d";
-  attribute_coord2d = glGetAttribLocation(program, attribute_name);
+  attribute_coord2d = glGetAttribLocation(program, "coord2d");
 
   if (attribute_coord2d == -1) {
-    fprintf(stderr, "Could not bind attribute %s\n", attribute_name);
+    fprintf(stderr, "Could not bind attribute %s\n", "coord2d");
     return 0;
   }
 
-  const char *const attribute_v_color_name = "v_color";
-  attribute_v_color = glGetAttribLocation(program, attribute_v_color_name);
+  attribute_v_color = glGetAttribLocation(program, "v_color");
 
   if (attribute_v_color == -1) {
-    fprintf(stderr, "Could not bind attribute %s\n", attribute_v_color_name);
+    fprintf(stderr, "Could not bind attribute %s\n", "v_color");
     return 0;
   }
 
