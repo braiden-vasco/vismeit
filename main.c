@@ -31,6 +31,32 @@ static const char *const fs_source =
 GLuint program;
 GLint attribute_coord2d;
 
+static int init_resources();
+static void onDisplay();
+static void free_resources();
+
+int main(int argc, char* argv[]) {
+  glutInit(&argc, argv);
+  glutInitContextVersion(2,0);
+  glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH);
+  glutInitWindowSize(640, 480);
+  glutCreateWindow("My First Triangle");
+
+  GLenum glew_status = glewInit();
+  if (glew_status != GLEW_OK) {
+    fprintf(stderr, "Error: %s\n", glewGetErrorString(glew_status));
+    return 1;
+  }
+
+  if (init_resources()) {
+    glutDisplayFunc(onDisplay);
+    glutMainLoop();
+  }
+
+  free_resources();
+  return 0;
+}
+
 int init_resources()
 {
   GLint compile_ok = GL_FALSE, link_ok = GL_FALSE;
@@ -73,6 +99,11 @@ int init_resources()
   return 1;
 }
 
+void free_resources()
+{
+  glDeleteProgram(program);
+}
+
 void onDisplay()
 {
   glClearColor(1.0, 1.0, 1.0, 1.0);
@@ -98,32 +129,4 @@ void onDisplay()
 
   glDisableVertexAttribArray(attribute_coord2d);
   glutSwapBuffers();
-}
-
-void free_resources()
-{
-  glDeleteProgram(program);
-}
-
-
-int main(int argc, char* argv[]) {
-  glutInit(&argc, argv);
-  glutInitContextVersion(2,0);
-  glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH);
-  glutInitWindowSize(640, 480);
-  glutCreateWindow("My First Triangle");
-
-  GLenum glew_status = glewInit();
-  if (glew_status != GLEW_OK) {
-    fprintf(stderr, "Error: %s\n", glewGetErrorString(glew_status));
-    return 1;
-  }
-
-  if (init_resources()) {
-    glutDisplayFunc(onDisplay);
-    glutMainLoop();
-  }
-
-  free_resources();
-  return 0;
 }
