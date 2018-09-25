@@ -10,6 +10,31 @@
 /* Using the GLUT library for the base windowing setup */
 #include <GL/freeglut.h>
 
+static const char *const vs_source =
+#ifdef GL_ES_VERSION_2_0
+  "#version 100                             \n"  // OpenGL ES 2.0
+#else
+  "#version 120                             \n"  // OpenGL 2.1
+#endif
+  "attribute vec2 coord2d;                  \n"
+  "void main(void) {                        \n"
+  "  gl_Position = vec4(coord2d, 0.0, 1.0); \n"
+  "}                                        \n"
+;
+
+static const char *const fs_source =
+#ifdef GL_ES_VERSION_2_0
+  "#version 100             \n"  // OpenGL ES 2.0
+#else
+  "#version 120             \n"  // OpenGL 2.1
+#endif
+  "void main(void) {        \n"
+  "  gl_FragColor[0] = 0.0; \n"
+  "  gl_FragColor[1] = 0.0; \n"
+  "  gl_FragColor[2] = 1.0; \n"
+  "}                        \n"
+;
+
 GLuint program;
 GLint attribute_coord2d;
 
@@ -18,16 +43,6 @@ int init_resources()
   GLint compile_ok = GL_FALSE, link_ok = GL_FALSE;
 
   GLuint vs = glCreateShader(GL_VERTEX_SHADER);
-  const char *vs_source =
-#ifdef GL_ES_VERSION_2_0
-    "#version 100\n"  // OpenGL ES 2.0
-#else
-    "#version 120\n"  // OpenGL 2.1
-#endif
-    "attribute vec2 coord2d;                  "
-    "void main(void) {                        "
-    "  gl_Position = vec4(coord2d, 0.0, 1.0); "
-    "}";
   glShaderSource(vs, 1, &vs_source, NULL);
   glCompileShader(vs);
   glGetShaderiv(vs, GL_COMPILE_STATUS, &compile_ok);
@@ -37,17 +52,6 @@ int init_resources()
   }
 
   GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
-  const char *fs_source =
-#ifdef GL_ES_VERSION_2_0
-    "#version 100\n"  // OpenGL ES 2.0
-#else
-    "#version 120\n"  // OpenGL 2.1
-#endif
-    "void main(void) {        "
-    "  gl_FragColor[0] = 0.0; "
-    "  gl_FragColor[1] = 0.0; "
-    "  gl_FragColor[2] = 1.0; "
-    "}";
   glShaderSource(fs, 1, &fs_source, NULL);
   glCompileShader(fs);
   glGetShaderiv(fs, GL_COMPILE_STATUS, &compile_ok);
