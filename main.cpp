@@ -65,7 +65,7 @@ static const GLushort cube_elements[] = {
 
 static GLuint program;
 static GLint attribute_coord3d, attribute_v_color;
-static GLint uniform_m_transform;
+static GLint uniform_mvp;
 static GLuint vbo_cube_vertices, vbo_cube_colors;
 static GLuint ibo_cube_elements;
 
@@ -128,10 +128,10 @@ int init_resources()
     return 0;
   }
 
-  uniform_m_transform = glGetUniformLocation(program, "m_transform");
+  uniform_mvp = glGetUniformLocation(program, "mvp");
 
-  if (uniform_m_transform == -1) {
-    fprintf(stderr, "Could not bind unform %s\n", "m_transform");
+  if (uniform_mvp == -1) {
+    fprintf(stderr, "Could not bind unform %s\n", "mvp");
     return 0;
   }
 
@@ -184,10 +184,10 @@ void render()
 
   glUseProgram(program);
 
-  glm::mat4 m_transform =
+  glm::mat4 mvp =
     glm::rotate(glm::mat4(1.0), 0.25f, glm::vec3(0.0, 0.0, 1.0));
 
-  glUniformMatrix4fv(uniform_m_transform, 1, GL_FALSE, glm::value_ptr(m_transform));
+  glUniformMatrix4fv(uniform_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
 
   glEnableVertexAttribArray(attribute_coord3d);
   glEnableVertexAttribArray(attribute_v_color);

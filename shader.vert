@@ -1,6 +1,6 @@
 #version 120
 
-uniform mat4 m_transform;
+uniform mat4 mvp;
 
 attribute vec2 coord3d;
 attribute vec3 v_color;
@@ -8,6 +8,6 @@ attribute vec3 v_color;
 varying vec3 f_color;
 
 void main(void) {
-  gl_Position = m_transform * vec4(coord3d, 0.0, 1.0);
+  gl_Position = mvp * vec4(coord3d, 0.0, 1.0);
   f_color = v_color;
 }
