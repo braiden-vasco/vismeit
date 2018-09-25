@@ -9,9 +9,9 @@ static VALUE rb_mVismeit_cShader_alloc(VALUE rb_klass);
 static VALUE rb_mVismeit_cProgram_alloc(VALUE rb_klass);
 static VALUE rb_mVismeit_cAttrib_alloc(VALUE rb_klass);
 
-static void rb_mVismeit_cShader_free(rb_mVismeit_cShader_CDATA *free_cdata);
-static void rb_mVismeit_cProgram_free(rb_mVismeit_cProgram_CDATA *free_cdata);
-static void rb_mVismeit_cAttrib_free(rb_mVismeit_cAttrib_CDATA *free_cdata);
+static void rb_mVismeit_cShader_free(rb_mVismeit_cShader_CDATA   *cdata_free);
+static void rb_mVismeit_cProgram_free(rb_mVismeit_cProgram_CDATA *cdata_free);
+static void rb_mVismeit_cAttrib_free(rb_mVismeit_cAttrib_CDATA   *cdata_free);
 
 static VALUE rb_mVismeit_cShader_initialize(VALUE rb_self,
                                             VALUE rb_type, VALUE rb_source);
@@ -50,52 +50,52 @@ void Init_vismeit()
 
 VALUE rb_mVismeit_cShader_alloc(const VALUE rb_klass)
 {
-  rb_mVismeit_cShader_CDATA *const alloc_cdata =
+  rb_mVismeit_cShader_CDATA *const cdata_alloc =
     ALLOC(rb_mVismeit_cShader_CDATA);
 
-  memset(alloc_cdata, 0, sizeof(rb_mVismeit_cShader_CDATA));
+  memset(cdata_alloc, 0, sizeof(rb_mVismeit_cShader_CDATA));
 
   return Data_Wrap_Struct(rb_klass, NULL,
-                          rb_mVismeit_cShader_free, alloc_cdata);
+                          rb_mVismeit_cShader_free, cdata_alloc);
 }
 
 VALUE rb_mVismeit_cProgram_alloc(const VALUE rb_klass)
 {
-  rb_mVismeit_cProgram_CDATA *const alloc_cdata =
+  rb_mVismeit_cProgram_CDATA *const cdata_alloc =
     ALLOC(rb_mVismeit_cProgram_CDATA);
 
-  memset(alloc_cdata, 0, sizeof(rb_mVismeit_cProgram_CDATA));
+  memset(cdata_alloc, 0, sizeof(rb_mVismeit_cProgram_CDATA));
 
   return Data_Wrap_Struct(rb_klass, NULL,
-                          rb_mVismeit_cProgram_free, alloc_cdata);
+                          rb_mVismeit_cProgram_free, cdata_alloc);
 }
 
 VALUE rb_mVismeit_cAttrib_alloc(const VALUE rb_klass)
 {
-  rb_mVismeit_cAttrib_CDATA *const alloc_cdata =
+  rb_mVismeit_cAttrib_CDATA *const cdata_alloc =
     ALLOC(rb_mVismeit_cAttrib_CDATA);
 
-  memset(alloc_cdata, 0, sizeof(rb_mVismeit_cAttrib_CDATA));
+  memset(cdata_alloc, 0, sizeof(rb_mVismeit_cAttrib_CDATA));
 
   return Data_Wrap_Struct(rb_klass, NULL,
-                          rb_mVismeit_cAttrib_free, alloc_cdata);
+                          rb_mVismeit_cAttrib_free, cdata_alloc);
 }
 
-void rb_mVismeit_cShader_free(rb_mVismeit_cShader_CDATA *const free_cdata)
+void rb_mVismeit_cShader_free(rb_mVismeit_cShader_CDATA *const cdata_free)
 {
-  glDeleteShader(free_cdata->gl_id);
-  free(free_cdata);
+  glDeleteShader(cdata_free->gl_id);
+  free(cdata_free);
 }
 
-void rb_mVismeit_cProgram_free(rb_mVismeit_cProgram_CDATA *const free_cdata)
+void rb_mVismeit_cProgram_free(rb_mVismeit_cProgram_CDATA *const cdata_free)
 {
-  glDeleteProgram(free_cdata->gl_id);
-  free(free_cdata);
+  glDeleteProgram(cdata_free->gl_id);
+  free(cdata_free);
 }
 
-void rb_mVismeit_cAttrib_free(rb_mVismeit_cAttrib_CDATA *const free_cdata)
+void rb_mVismeit_cAttrib_free(rb_mVismeit_cAttrib_CDATA *const cdata_free)
 {
-  free(free_cdata);
+  free(cdata_free);
 }
 
 VALUE rb_mVismeit_cShader_initialize(
@@ -122,12 +122,12 @@ VALUE rb_mVismeit_cShader_initialize(
     rb_raise(rb_eRuntimeError, "invalid type");
   }
 
-  rb_mVismeit_cShader_CDATA *self_cdata;
-  Data_Get_Struct(rb_self, rb_mVismeit_cShader_CDATA, self_cdata);
+  rb_mVismeit_cShader_CDATA *cdata_self;
+  Data_Get_Struct(rb_self, rb_mVismeit_cShader_CDATA, cdata_self);
 
-  self_cdata->gl_id = glCreateShader(gl_shader_type);
+  cdata_self->gl_id = glCreateShader(gl_shader_type);
 
-  if (self_cdata->gl_id == 0)
+  if (cdata_self->gl_id == 0)
   {
     rb_raise(rb_eRuntimeError, "can not generate shader object");
   }
@@ -135,12 +135,12 @@ VALUE rb_mVismeit_cShader_initialize(
   const GLchar *const gl_source_text = RSTRING_PTR(rb_source);
   const GLint const gl_source_length = RSTRING_LEN(rb_source);
 
-  glShaderSource(self_cdata->gl_id, 1, &gl_source_text, &gl_source_length);
+  glShaderSource(cdata_self->gl_id, 1, &gl_source_text, &gl_source_length);
 
-  glCompileShader(self_cdata->gl_id);
+  glCompileShader(cdata_self->gl_id);
 
   GLint gl_compile_status;
-  glGetShaderiv(self_cdata->gl_id, GL_COMPILE_STATUS, &gl_compile_status);
+  glGetShaderiv(cdata_self->gl_id, GL_COMPILE_STATUS, &gl_compile_status);
 
   if (gl_compile_status == 0)
   {
@@ -157,12 +157,12 @@ VALUE rb_mVismeit_cProgram_initialize(
 {
   Check_Type(rb_shaders, T_ARRAY);
 
-  rb_mVismeit_cProgram_CDATA *self_cdata;
-  Data_Get_Struct(rb_self, rb_mVismeit_cProgram_CDATA, self_cdata);
+  rb_mVismeit_cProgram_CDATA *cdata_self;
+  Data_Get_Struct(rb_self, rb_mVismeit_cProgram_CDATA, cdata_self);
 
-  self_cdata->gl_id = glCreateProgram();
+  cdata_self->gl_id = glCreateProgram();
 
-  if (self_cdata->gl_id == 0)
+  if (cdata_self->gl_id == 0)
   {
     rb_raise(rb_eRuntimeError, "can not generate program object");
   }
@@ -181,16 +181,16 @@ VALUE rb_mVismeit_cProgram_initialize(
 
     rb_ary_push(rb_ivar_shaders, rb_shader);
 
-    rb_mVismeit_cShader_CDATA *shader_cdata;
-    Data_Get_Struct(rb_shader, rb_mVismeit_cShader_CDATA, shader_cdata);
+    rb_mVismeit_cShader_CDATA *cdata_shader;
+    Data_Get_Struct(rb_shader, rb_mVismeit_cShader_CDATA, cdata_shader);
 
-    glAttachShader(self_cdata->gl_id, shader_cdata->gl_id);
+    glAttachShader(cdata_self->gl_id, cdata_shader->gl_id);
   }
 
-  glLinkProgram(self_cdata->gl_id);
+  glLinkProgram(cdata_self->gl_id);
 
   GLint gl_link_status;
-  glGetProgramiv(self_cdata->gl_id, GL_LINK_STATUS, &gl_link_status);
+  glGetProgramiv(cdata_self->gl_id, GL_LINK_STATUS, &gl_link_status);
 
   if (gl_link_status == 0)
   {
@@ -210,17 +210,17 @@ VALUE rb_mVismeit_cAttrib_initialize(
 
   rb_ivar_set(rb_self, rb_intern("@program"), rb_program);
 
-  rb_mVismeit_cAttrib_CDATA *self_cdata;
-  Data_Get_Struct(rb_self, rb_mVismeit_cAttrib_CDATA, self_cdata);
+  rb_mVismeit_cAttrib_CDATA *cdata_self;
+  Data_Get_Struct(rb_self, rb_mVismeit_cAttrib_CDATA, cdata_self);
 
-  rb_mVismeit_cProgram_CDATA *program_cdata;
-  Data_Get_Struct(rb_program, rb_mVismeit_cProgram_CDATA, program_cdata);
+  rb_mVismeit_cProgram_CDATA *cdata_program;
+  Data_Get_Struct(rb_program, rb_mVismeit_cProgram_CDATA, cdata_program);
 
   const char *const name = StringValueCStr(rb_name);
 
-  self_cdata->gl_id = glGetAttribLocation(program_cdata->gl_id, name);
+  cdata_self->gl_id = glGetAttribLocation(cdata_program->gl_id, name);
 
-  if (self_cdata->gl_id == -1)
+  if (cdata_self->gl_id == -1)
   {
     rb_raise(rb_eRuntimeError, "can not get attribute location");
   }
