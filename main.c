@@ -5,10 +5,26 @@
 
 #include "ext.h"
 
-static GLfloat triangle_data[] = {
-   0.0,  0.8, 0.0,  1.0, 1.0, 0.0,
-  -0.8, -0.8, 0.0,  0.0, 0.0, 1.0,
-   0.8, -0.8, 0.0,  1.0, 0.0, 0.0,
+struct Vertex3fAttribute
+{
+  GLfloat x, y, z;
+};
+
+struct Color3fAttribute
+{
+  GLfloat r, g, b;
+};
+
+struct Vertex3fColor3fAttribute
+{
+  struct Vertex3fAttribute vertex;
+  struct Color3fAttribute color;
+};
+
+static struct Vertex3fColor3fAttribute triangle_attributes[] = {
+  {{ 0.0,  0.8, 0.0}, {1.0, 1.0, 0.0}},
+  {{-0.8, -0.8, 0.0}, {0.0, 0.0, 1.0}},
+  {{ 0.8, -0.8, 0.0}, {1.0, 0.0, 0.0}},
 };
 
 static GLuint program;
@@ -84,8 +100,8 @@ int init_resources()
 
   glBufferData(
     GL_ARRAY_BUFFER,
-    sizeof(triangle_data),
-    triangle_data,
+    sizeof(triangle_attributes),
+    triangle_attributes,
     GL_STATIC_DRAW
   );
 
@@ -117,7 +133,7 @@ void render()
     2,
     GL_FLOAT,
     GL_FALSE,
-    6 * sizeof(GL_FLOAT),
+    sizeof(struct Vertex3fColor3fAttribute),
     0
   );
 
@@ -126,8 +142,8 @@ void render()
     3,
     GL_FLOAT,
     GL_FALSE,
-    6 * sizeof(GL_FLOAT),
-    (GLvoid*)(3 * sizeof(GL_FLOAT))
+    sizeof(struct Vertex3fColor3fAttribute),
+    (GLvoid*)(sizeof(struct Vertex3fAttribute))
   );
 
   glDrawArrays(GL_TRIANGLES, 0, 3);
