@@ -28,6 +28,12 @@ static const char *const fs_source =
   "}                        \n"
 ;
 
+static GLfloat triangle_vertices[] = {
+  0.0, 0.8,
+  -0.8, -0.8,
+  0.8, -0.8,
+};
+
 static GLuint program;
 static GLint attribute_coord2d;
 
@@ -116,12 +122,6 @@ void onDisplay()
 
   glUseProgram(program);
   glEnableVertexAttribArray(attribute_coord2d);
-
-  GLfloat triangle_vertices[] = {
-     0.0,  0.8,
-    -0.8, -0.8,
-     0.8, -0.8,
-  };
 
   glVertexAttribPointer(
     attribute_coord2d,
