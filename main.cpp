@@ -309,6 +309,33 @@ void on_display()
   glEnableVertexAttribArray(b_coord3d_attribute);
   glEnableVertexAttribArray(b_v_color_attribute);
 
+  glBindBuffer(GL_ARRAY_BUFFER, vbo_cube_vertices);
+
+  glVertexAttribPointer(
+    b_coord3d_attribute,
+    3,
+    GL_FLOAT,
+    GL_FALSE,
+    0,
+    0
+  );
+
+  glBindBuffer(GL_ARRAY_BUFFER, vbo_cube_colors);
+
+  glVertexAttribPointer(
+    b_v_color_attribute,
+    3,
+    GL_FLOAT,
+    GL_FALSE,
+    0,
+    0
+  );
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_cube_elements);
+
+  glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
+  glDrawElements(GL_TRIANGLES, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
+
   glutSwapBuffers();
 }
 
@@ -330,11 +357,13 @@ void on_idle()
 
   glm::mat4 mvp = projection * view * model * anim;
 
+  glm::mat4 mvp2 = mvp * glm::translate(glm::mat4(1.0f), glm::vec3(-0.5, -1.0, -0.5));
+
   glUseProgram(a_program);
   glUniformMatrix4fv(a_mvp_uniform, 1, GL_FALSE, glm::value_ptr(mvp));
 
   glUseProgram(b_program);
-  glUniformMatrix4fv(b_mvp_uniform, 1, GL_FALSE, glm::value_ptr(mvp));
+  glUniformMatrix4fv(b_mvp_uniform, 1, GL_FALSE, glm::value_ptr(mvp2));
 
   glutPostRedisplay();
 }
