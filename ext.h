@@ -26,7 +26,7 @@ typedef struct {
 
 typedef struct {
   GLuint gl_id;
-} CDATA_mVismeit_cBuffer;
+} CDATA_mVismeit_cArrayBuffer;
 
 extern void Init_vismeit();
 

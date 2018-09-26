@@ -5,19 +5,21 @@ static VALUE rb_mVismeit_cShader;
 static VALUE rb_mVismeit_cProgram;
 static VALUE rb_mVismeit_cAttrib;
 static VALUE rb_mVismeit_cUniform;
-static VALUE rb_mVismeit_cBuffer;
+static VALUE rb_mVismeit_cArrayBuffer;
 
 static VALUE rb_mVismeit_cShader_alloc(VALUE rb_klass);
 static VALUE rb_mVismeit_cProgram_alloc(VALUE rb_klass);
 static VALUE rb_mVismeit_cAttrib_alloc(VALUE rb_klass);
 static VALUE rb_mVismeit_cUniform_alloc(VALUE rb_klass);
-static VALUE rb_mVismeit_cBuffer_alloc(VALUE rb_klass);
+static VALUE rb_mVismeit_cArrayBuffer_alloc(VALUE rb_klass);
 
 static void rb_mVismeit_cShader_free(CDATA_mVismeit_cShader   *cdata_free);
 static void rb_mVismeit_cProgram_free(CDATA_mVismeit_cProgram *cdata_free);
 static void rb_mVismeit_cAttrib_free(CDATA_mVismeit_cAttrib   *cdata_free);
 static void rb_mVismeit_cUniform_free(CDATA_mVismeit_cUniform *cdata_free);
-static void rb_mVismeit_cBuffer_free(CDATA_mVismeit_cBuffer   *cdata_free);
+
+static void rb_mVismeit_cArrayBuffer_free(CDATA_mVismeit_cArrayBuffer
+                                          *cdata_free);
 
 static VALUE rb_mVismeit_cShader_initialize(VALUE rb_self,
                                             VALUE rb_type, VALUE rb_source);
@@ -30,8 +32,8 @@ static VALUE rb_mVismeit_cAttrib_initialize(VALUE rb_self,
 static VALUE rb_mVismeit_cUniform_initialize(VALUE rb_self,
                                              VALUE rb_program, VALUE rb_name);
 
-static VALUE rb_mVismeit_cBuffer_initialize(VALUE rb_self,
-                                            VALUE rb_type, VALUE rb_data);
+static VALUE rb_mVismeit_cArrayBuffer_initialize(VALUE rb_self,
+                                                 VALUE rb_type, VALUE rb_data);
 
 void Init_vismeit()
 {
@@ -49,14 +51,16 @@ void Init_vismeit()
   rb_mVismeit_cUniform =
     rb_define_class_under(rb_mVismeit, "Uniform", rb_cObject);
 
-  rb_mVismeit_cBuffer =
-    rb_define_class_under(rb_mVismeit, "Buffer", rb_cObject);
+  rb_mVismeit_cArrayBuffer =
+    rb_define_class_under(rb_mVismeit, "ArrayBuffer", rb_cObject);
 
   rb_define_alloc_func(rb_mVismeit_cShader,  rb_mVismeit_cShader_alloc);
   rb_define_alloc_func(rb_mVismeit_cProgram, rb_mVismeit_cProgram_alloc);
   rb_define_alloc_func(rb_mVismeit_cAttrib,  rb_mVismeit_cAttrib_alloc);
   rb_define_alloc_func(rb_mVismeit_cUniform, rb_mVismeit_cUniform_alloc);
-  rb_define_alloc_func(rb_mVismeit_cBuffer,  rb_mVismeit_cBuffer_alloc);
+
+  rb_define_alloc_func(rb_mVismeit_cArrayBuffer,
+                       rb_mVismeit_cArrayBuffer_alloc);
 
   rb_define_method(rb_mVismeit_cShader, "initialize",
                    rb_mVismeit_cShader_initialize, 2);
@@ -70,8 +74,8 @@ void Init_vismeit()
   rb_define_method(rb_mVismeit_cUniform, "initialize",
                    rb_mVismeit_cUniform_initialize, 2);
 
-  rb_define_method(rb_mVismeit_cBuffer, "initialize",
-                   rb_mVismeit_cBuffer_initialize, 2);
+  rb_define_method(rb_mVismeit_cArrayBuffer, "initialize",
+                   rb_mVismeit_cArrayBuffer_initialize, 2);
 }
 
 VALUE rb_mVismeit_cShader_alloc(const VALUE rb_klass)
@@ -114,14 +118,15 @@ VALUE rb_mVismeit_cUniform_alloc(const VALUE rb_klass)
                           rb_mVismeit_cUniform_free, cdata_alloc);
 }
 
-VALUE rb_mVismeit_cBuffer_alloc(const VALUE rb_klass)
+VALUE rb_mVismeit_cArrayBuffer_alloc(const VALUE rb_klass)
 {
-  CDATA_mVismeit_cBuffer *const cdata_alloc = ALLOC(CDATA_mVismeit_cBuffer);
+  CDATA_mVismeit_cArrayBuffer *const cdata_alloc =
+    ALLOC(CDATA_mVismeit_cArrayBuffer);
 
-  memset(cdata_alloc, 0, sizeof(CDATA_mVismeit_cBuffer));
+  memset(cdata_alloc, 0, sizeof(CDATA_mVismeit_cArrayBuffer));
 
   return Data_Wrap_Struct(rb_klass, NULL,
-                          rb_mVismeit_cBuffer_free, cdata_alloc);
+                          rb_mVismeit_cArrayBuffer_free, cdata_alloc);
 }
 
 void rb_mVismeit_cShader_free(CDATA_mVismeit_cShader *const cdata_free)
@@ -146,7 +151,8 @@ void rb_mVismeit_cUniform_free(CDATA_mVismeit_cUniform *const cdata_free)
   free(cdata_free);
 }
 
-void rb_mVismeit_cBuffer_free(CDATA_mVismeit_cBuffer *const cdata_free)
+void rb_mVismeit_cArrayBuffer_free(CDATA_mVismeit_cArrayBuffer
+                                   *const cdata_free)
 {
   glDeleteBuffers(1, &cdata_free->gl_id);
   free(cdata_free);
@@ -327,7 +333,7 @@ VALUE rb_mVismeit_cUniform_initialize(
   return rb_self;
 }
 
-VALUE rb_mVismeit_cBuffer_initialize(
+VALUE rb_mVismeit_cArrayBuffer_initialize(
   const VALUE rb_self,
   const VALUE rb_type,
   const VALUE rb_data
@@ -353,8 +359,8 @@ VALUE rb_mVismeit_cBuffer_initialize(
     rb_raise(rb_eRuntimeError, "invalid type");
   }
 
-  CDATA_mVismeit_cBuffer *cdata_self;
-  Data_Get_Struct(rb_self, CDATA_mVismeit_cBuffer, cdata_self);
+  CDATA_mVismeit_cArrayBuffer *cdata_self;
+  Data_Get_Struct(rb_self, CDATA_mVismeit_cArrayBuffer, cdata_self);
 
   glGenBuffers(1, &cdata_self->gl_id);
 
