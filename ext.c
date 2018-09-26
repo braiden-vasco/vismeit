@@ -38,10 +38,10 @@ static VALUE rb_mVismeit_cUniform_initialize(VALUE rb_self,
                                              VALUE rb_program, VALUE rb_name);
 
 static VALUE rb_mVismeit_cArrayBuffer_initialize(VALUE rb_self,
-                                                 VALUE rb_type, VALUE rb_data);
+                                                 VALUE rb_data);
 
-static VALUE rb_mVismeit_cElementArrayBuffer_initialize(
-  VALUE rb_self, VALUE rb_type, VALUE rb_data);
+static VALUE rb_mVismeit_cElementArrayBuffer_initialize(VALUE rb_self,
+                                                        VALUE rb_data);
 
 void Init_vismeit()
 {
@@ -89,10 +89,10 @@ void Init_vismeit()
                    rb_mVismeit_cUniform_initialize, 2);
 
   rb_define_method(rb_mVismeit_cArrayBuffer, "initialize",
-                   rb_mVismeit_cArrayBuffer_initialize, 2);
+                   rb_mVismeit_cArrayBuffer_initialize, 1);
 
   rb_define_method(rb_mVismeit_cElementArrayBuffer, "initialize",
-                   rb_mVismeit_cElementArrayBuffer_initialize, 2);
+                   rb_mVismeit_cElementArrayBuffer_initialize, 1);
 }
 
 VALUE rb_mVismeit_cShader_alloc(const VALUE rb_klass)
@@ -370,11 +370,9 @@ VALUE rb_mVismeit_cUniform_initialize(
 
 VALUE rb_mVismeit_cArrayBuffer_initialize(
   const VALUE rb_self,
-  const VALUE rb_type,
   const VALUE rb_data
 )
 {
-  Check_Type(rb_type, T_SYMBOL);
   Check_Type(rb_data, T_STRING);
 
   CDATA_mVismeit_cArrayBuffer *cdata_self;
@@ -401,11 +399,9 @@ VALUE rb_mVismeit_cArrayBuffer_initialize(
 
 VALUE rb_mVismeit_cElementArrayBuffer_initialize(
   const VALUE rb_self,
-  const VALUE rb_type,
   const VALUE rb_data
 )
 {
-  Check_Type(rb_type, T_SYMBOL);
   Check_Type(rb_data, T_STRING);
 
   CDATA_mVismeit_cElementArrayBuffer *cdata_self;
