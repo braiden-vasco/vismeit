@@ -138,24 +138,28 @@ int init_resources()
     rb_str_new_cstr("v_color")
   );
 
+  const VALUE rb_mvp_uniform = rb_funcall(
+    rb_eval_string("Vismeit::Uniform"),
+    rb_intern("new"),
+    2,
+    rb_program,
+    rb_str_new_cstr("mvp")
+  );
+
   CDATA_mVismeit_cProgram *cdata_program;
   CDATA_mVismeit_cAttrib  *cdata_coord3d_attrib;
   CDATA_mVismeit_cAttrib  *cdata_v_color_attrib;
+  CDATA_mVismeit_cUniform *cdata_mvp_uniform;
 
   Data_Get_Struct(rb_program,        CDATA_mVismeit_cProgram, cdata_program);
   Data_Get_Struct(rb_coord3d_attrib, CDATA_mVismeit_cAttrib,  cdata_coord3d_attrib);
   Data_Get_Struct(rb_v_color_attrib, CDATA_mVismeit_cAttrib,  cdata_v_color_attrib);
+  Data_Get_Struct(rb_mvp_uniform,    CDATA_mVismeit_cUniform, cdata_mvp_uniform);
 
   program           = cdata_program->gl_id;
   attribute_coord3d = cdata_coord3d_attrib->gl_id;
   attribute_v_color = cdata_v_color_attrib->gl_id;
-
-  uniform_mvp = glGetUniformLocation(program, "mvp");
-
-  if (uniform_mvp == -1) {
-    fprintf(stderr, "Could not bind unform %s\n", "mvp");
-    return 0;
-  }
+  uniform_mvp       = cdata_mvp_uniform->gl_id;
 
   glGenBuffers(1, &vbo_cube_vertices);
   glGenBuffers(1, &vbo_cube_colors);
