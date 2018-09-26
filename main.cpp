@@ -26,51 +26,6 @@ struct Color3fAttribute
   GLfloat r, g, b;
 };
 
-static const struct Vertex3fAttribute cube_vertex_attributes[] = {
-  {-1.0, -1.0,  1.0},
-  { 1.0, -1.0,  1.0},
-  { 1.0,  1.0,  1.0},
-  {-1.0,  1.0,  1.0},
-
-  {-1.0, -1.0, -1.0},
-  { 1.0, -1.0, -1.0},
-  { 1.0,  1.0, -1.0},
-  {-1.0,  1.0, -1.0},
-};
-
-static const struct Color3fAttribute cube_color_attributes[] = {
-  {1.0, 0.0, 0.0},
-  {0.0, 1.0, 0.0},
-  {0.0, 0.0, 1.0},
-  {1.0, 1.0, 1.0},
-
-  {1.0, 0.0, 0.0},
-  {0.0, 1.0, 0.0},
-  {0.0, 0.0, 1.0},
-  {1.0, 1.0, 1.0},
-};
-
-static const GLushort cube_elements[] = {
-  // front
-  0, 1, 2,
-  2, 3, 0,
-  // right
-  1, 5, 6,
-  6, 2, 1,
-  // back
-  7, 6, 5,
-  5, 4, 7,
-  // left
-  4, 0, 3,
-  3, 7, 4,
-  // bottom
-  4, 5, 1,
-  1, 0, 4,
-  // top
-  3, 2, 6,
-  6, 7, 3,
-};
-
 static GLuint program;
 static GLint attribute_coord3d, attribute_v_color;
 static GLint uniform_mvp;
@@ -219,8 +174,8 @@ int init_resources()
 
   glBufferData(
     GL_ARRAY_BUFFER,
-    sizeof(cube_vertex_attributes),
-    cube_vertex_attributes,
+    RSTRING_LEN(rb_cube_vertex_attributes),
+    RSTRING_PTR(rb_cube_vertex_attributes),
     GL_STATIC_DRAW
   );
 
@@ -228,8 +183,8 @@ int init_resources()
 
   glBufferData(
     GL_ARRAY_BUFFER,
-    sizeof(cube_color_attributes),
-    cube_color_attributes,
+    RSTRING_LEN(rb_cube_color_attributes),
+    RSTRING_PTR(rb_cube_color_attributes),
     GL_STATIC_DRAW
   );
 
@@ -237,8 +192,8 @@ int init_resources()
 
   glBufferData(
     GL_ELEMENT_ARRAY_BUFFER,
-    sizeof(cube_elements),
-    cube_elements,
+    RSTRING_LEN(rb_cube_elements),
+    RSTRING_PTR(rb_cube_elements),
     GL_STATIC_DRAW
   );
 
