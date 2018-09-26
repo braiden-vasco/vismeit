@@ -353,8 +353,6 @@ VALUE rb_mVismeit_cBuffer_initialize(
     rb_raise(rb_eRuntimeError, "invalid type");
   }
 
-  rb_ivar_set(rb_self, rb_intern("@data"), rb_data);
-
   CDATA_mVismeit_cBuffer *cdata_self;
   Data_Get_Struct(rb_self, CDATA_mVismeit_cBuffer, cdata_self);
 
