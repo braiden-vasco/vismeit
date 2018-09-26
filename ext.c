@@ -276,7 +276,7 @@ VALUE rb_mVismeit_cProgram_initialize(
   {
     const VALUE rb_shader = rb_ary_entry(rb_shaders, i);
 
-    if (!rb_funcall(rb_shader, rb_intern("is_a?"), 1, rb_mVismeit_cShader))
+    if (!rb_funcall(rb_shader, rb_intern("instance_of?"), 1, rb_mVismeit_cShader))
     {
       rb_raise(rb_eTypeError, "expected ::Vismeit::Shader");
     }
@@ -310,7 +310,7 @@ VALUE rb_mVismeit_cAttrib_initialize(
 {
   Check_Type(rb_name, T_STRING);
 
-  if (!rb_funcall(rb_program, rb_intern("is_a?"), 1, rb_mVismeit_cProgram))
+  if (!rb_funcall(rb_program, rb_intern("instance_of?"), 1, rb_mVismeit_cProgram))
   {
     rb_raise(rb_eTypeError, "expected ::Vismeit::Program");
   }
@@ -343,7 +343,7 @@ VALUE rb_mVismeit_cUniform_initialize(
 {
   Check_Type(rb_name, T_STRING);
 
-  if (!rb_funcall(rb_program, rb_intern("is_a?"), 1, rb_mVismeit_cProgram))
+  if (!rb_funcall(rb_program, rb_intern("instance_of?"), 1, rb_mVismeit_cProgram))
   {
     rb_raise(rb_eTypeError, "expected ::Vismeit::Program");
   }
