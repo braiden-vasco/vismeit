@@ -168,35 +168,35 @@ int init_resources()
   );
 
   const VALUE rb_cube_element_ibo = rb_funcall(
-    rb_eval_string("Vismeit::ArrayBuffer"),
+    rb_eval_string("Vismeit::ElementArrayBuffer"),
     rb_intern("new"),
     2,
     ID2SYM(rb_intern("element_array_buffer")),
     rb_cube_elements
   );
 
-  CDATA_mVismeit_cProgram     *cdata_program;
-  CDATA_mVismeit_cAttrib      *cdata_coord3d_attrib;
-  CDATA_mVismeit_cAttrib      *cdata_v_color_attrib;
-  CDATA_mVismeit_cUniform     *cdata_mvp_uniform;
-  CDATA_mVismeit_cArrayBuffer *cdata_cube_vertex_vbo;
-  CDATA_mVismeit_cArrayBuffer *cdata_cube_color_vbo;
-  CDATA_mVismeit_cArrayBuffer *cdata_cube_element_ibo;
+  CDATA_mVismeit_cProgram            *cdata_program;
+  CDATA_mVismeit_cAttrib             *cdata_coord3d_attrib;
+  CDATA_mVismeit_cAttrib             *cdata_v_color_attrib;
+  CDATA_mVismeit_cUniform            *cdata_mvp_uniform;
+  CDATA_mVismeit_cArrayBuffer        *cdata_cube_vertex_vbo;
+  CDATA_mVismeit_cArrayBuffer        *cdata_cube_color_vbo;
+  CDATA_mVismeit_cElementArrayBuffer *cdata_cube_element_ibo;
 
   Data_Get_Struct(rb_program,
-                  CDATA_mVismeit_cProgram,     cdata_program);
+                  CDATA_mVismeit_cProgram,            cdata_program);
   Data_Get_Struct(rb_coord3d_attrib,
-                  CDATA_mVismeit_cAttrib,      cdata_coord3d_attrib);
+                  CDATA_mVismeit_cAttrib,             cdata_coord3d_attrib);
   Data_Get_Struct(rb_v_color_attrib,
-                  CDATA_mVismeit_cAttrib,      cdata_v_color_attrib);
+                  CDATA_mVismeit_cAttrib,             cdata_v_color_attrib);
   Data_Get_Struct(rb_mvp_uniform,
-                  CDATA_mVismeit_cUniform,     cdata_mvp_uniform);
+                  CDATA_mVismeit_cUniform,            cdata_mvp_uniform);
   Data_Get_Struct(rb_cube_vertex_vbo,
-                  CDATA_mVismeit_cArrayBuffer, cdata_cube_vertex_vbo);
+                  CDATA_mVismeit_cArrayBuffer,        cdata_cube_vertex_vbo);
   Data_Get_Struct(rb_cube_color_vbo,
-                  CDATA_mVismeit_cArrayBuffer, cdata_cube_color_vbo);
+                  CDATA_mVismeit_cArrayBuffer,        cdata_cube_color_vbo);
   Data_Get_Struct(rb_cube_element_ibo,
-                  CDATA_mVismeit_cArrayBuffer, cdata_cube_element_ibo);
+                  CDATA_mVismeit_cElementArrayBuffer, cdata_cube_element_ibo);
 
   program           = cdata_program->gl_id;
   attribute_coord3d = cdata_coord3d_attrib->gl_id;
