@@ -377,23 +377,6 @@ VALUE rb_mVismeit_cArrayBuffer_initialize(
   Check_Type(rb_type, T_SYMBOL);
   Check_Type(rb_data, T_STRING);
 
-  GLenum gl_buffer_type;
-
-  if (rb_funcall(rb_type, rb_intern("=="), 1,
-                 ID2SYM(rb_intern("array_buffer"))))
-  {
-    gl_buffer_type = GL_ARRAY_BUFFER;
-  }
-  else if (rb_funcall(rb_type, rb_intern("=="), 1,
-                      ID2SYM(rb_intern("element_array_buffer"))))
-  {
-    gl_buffer_type = GL_ELEMENT_ARRAY_BUFFER;
-  }
-  else
-  {
-    rb_raise(rb_eRuntimeError, "invalid type");
-  }
-
   CDATA_mVismeit_cArrayBuffer *cdata_self;
   Data_Get_Struct(rb_self, CDATA_mVismeit_cArrayBuffer, cdata_self);
 
@@ -404,10 +387,10 @@ VALUE rb_mVismeit_cArrayBuffer_initialize(
     rb_raise(rb_eRuntimeError, "can not generate buffer object");
   }
 
-  glBindBuffer(gl_buffer_type, cdata_self->gl_id);
+  glBindBuffer(GL_ARRAY_BUFFER, cdata_self->gl_id);
 
   glBufferData(
-    gl_buffer_type,
+    GL_ARRAY_BUFFER,
     RSTRING_LEN(rb_data),
     RSTRING_PTR(rb_data),
     GL_STATIC_DRAW
@@ -425,23 +408,6 @@ VALUE rb_mVismeit_cElementArrayBuffer_initialize(
   Check_Type(rb_type, T_SYMBOL);
   Check_Type(rb_data, T_STRING);
 
-  GLenum gl_buffer_type;
-
-  if (rb_funcall(rb_type, rb_intern("=="), 1,
-                 ID2SYM(rb_intern("array_buffer"))))
-  {
-    gl_buffer_type = GL_ARRAY_BUFFER;
-  }
-  else if (rb_funcall(rb_type, rb_intern("=="), 1,
-                      ID2SYM(rb_intern("element_array_buffer"))))
-  {
-    gl_buffer_type = GL_ELEMENT_ARRAY_BUFFER;
-  }
-  else
-  {
-    rb_raise(rb_eRuntimeError, "invalid type");
-  }
-
   CDATA_mVismeit_cElementArrayBuffer *cdata_self;
   Data_Get_Struct(rb_self, CDATA_mVismeit_cElementArrayBuffer, cdata_self);
 
@@ -452,10 +418,10 @@ VALUE rb_mVismeit_cElementArrayBuffer_initialize(
     rb_raise(rb_eRuntimeError, "can not generate buffer object");
   }
 
-  glBindBuffer(gl_buffer_type, cdata_self->gl_id);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cdata_self->gl_id);
 
   glBufferData(
-    gl_buffer_type,
+    GL_ELEMENT_ARRAY_BUFFER,
     RSTRING_LEN(rb_data),
     RSTRING_PTR(rb_data),
     GL_STATIC_DRAW
