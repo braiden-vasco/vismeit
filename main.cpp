@@ -115,6 +115,56 @@ int main(int argc, char* argv[]) {
 
 int init_resources()
 {
+  const VALUE rb_cube_vertex_attributes = rb_eval_string(
+    "["
+    "  -1.0, -1.0,  1.0,"
+    "   1.0, -1.0,  1.0,"
+    "   1.0,  1.0,  1.0,"
+    "  -1.0,  1.0,  1.0,"
+
+    "  -1.0, -1.0, -1.0,"
+    "   1.0, -1.0, -1.0,"
+    "   1.0,  1.0, -1.0,"
+    "  -1.0,  1.0, -1.0,"
+    "].pack('f*').freeze" // float
+  );
+
+  const VALUE rb_cube_color_attributes = rb_eval_string(
+    "["
+    "  1.0, 0.0, 0.0,"
+    "  0.0, 1.0, 0.0,"
+    "  0.0, 0.0, 1.0,"
+    "  1.0, 1.0, 1.0,"
+
+    "  1.0, 0.0, 0.0,"
+    "  0.0, 1.0, 0.0,"
+    "  0.0, 0.0, 1.0,"
+    "  1.0, 1.0, 1.0,"
+    "].pack('f*').freeze" // float
+  );
+
+  const VALUE rb_cube_elements = rb_eval_string(
+    "["
+    "  0, 1, 2,"
+    "  2, 3, 0,"
+
+    "  1, 5, 6,"
+    "  6, 2, 1,"
+
+    "  7, 6, 5,"
+    "  5, 4, 7,"
+
+    "  4, 0, 3,"
+    "  3, 7, 4,"
+
+    "  4, 5, 1,"
+    "  1, 0, 4,"
+
+    "  3, 2, 6,"
+    "  6, 7, 3,"
+    "].pack('S*').freeze" // unsigned short
+  );
+
   const VALUE rb_program = rb_eval_string(
     "Vismeit::Program.new([                                      \n"
     "  Vismeit::Shader.new(:vertex, File.read('shader.vert')),   \n"
