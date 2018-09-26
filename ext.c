@@ -1,5 +1,8 @@
 #include "ext.h"
 
+#define INSTANCE_OF(value, klass) \
+  (rb_funcall((value), rb_intern("instance_of?"), 1, (klass)))
+
 static VALUE rb_mVismeit;
 static VALUE rb_mVismeit_cShader;
 static VALUE rb_mVismeit_cProgram;
@@ -276,7 +279,7 @@ VALUE rb_mVismeit_cProgram_initialize(
   {
     const VALUE rb_shader = rb_ary_entry(rb_shaders, i);
 
-    if (!rb_funcall(rb_shader, rb_intern("instance_of?"), 1, rb_mVismeit_cShader))
+    if (!INSTANCE_OF(rb_shader, rb_mVismeit_cShader))
     {
       rb_raise(rb_eTypeError, "expected ::Vismeit::Shader");
     }
@@ -310,7 +313,7 @@ VALUE rb_mVismeit_cAttrib_initialize(
 {
   Check_Type(rb_name, T_STRING);
 
-  if (!rb_funcall(rb_program, rb_intern("instance_of?"), 1, rb_mVismeit_cProgram))
+  if (!INSTANCE_OF(rb_program, rb_mVismeit_cProgram))
   {
     rb_raise(rb_eTypeError, "expected ::Vismeit::Program");
   }
@@ -343,7 +346,7 @@ VALUE rb_mVismeit_cUniform_initialize(
 {
   Check_Type(rb_name, T_STRING);
 
-  if (!rb_funcall(rb_program, rb_intern("instance_of?"), 1, rb_mVismeit_cProgram))
+  if (!INSTANCE_OF(rb_program, rb_mVismeit_cProgram))
   {
     rb_raise(rb_eTypeError, "expected ::Vismeit::Program");
   }
