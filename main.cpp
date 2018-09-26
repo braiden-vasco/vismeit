@@ -26,7 +26,7 @@ struct Color3fAttribute
   GLfloat r, g, b;
 };
 
-static GLuint a_program;
+static GLuint a_program, b_program;
 static GLint attribute_coord3d, attribute_v_color;
 static GLint uniform_mvp;
 static GLuint vbo_cube_vertices, vbo_cube_colors;
@@ -127,6 +127,13 @@ int init_resources()
     "])                                                               \n"
   );
 
+  const VALUE rb_b_program = rb_eval_string(
+    "Vismeit::Program.new([                                           \n"
+    "  Vismeit::Shader.new(:vertex_shader,   File.read('sh/b.vert')), \n"
+    "  Vismeit::Shader.new(:fragment_shader, File.read('sh/b.frag')), \n"
+    "])                                                               \n"
+  );
+
   const VALUE rb_coord3d_attrib = rb_funcall(
     rb_eval_string("Vismeit::Attrib"),
     rb_intern("new"),
@@ -173,6 +180,7 @@ int init_resources()
   );
 
   CDATA_mVismeit_cProgram            *cdata_a_program;
+  CDATA_mVismeit_cProgram            *cdata_b_program;
   CDATA_mVismeit_cAttrib             *cdata_coord3d_attrib;
   CDATA_mVismeit_cAttrib             *cdata_v_color_attrib;
   CDATA_mVismeit_cUniform            *cdata_mvp_uniform;
@@ -182,6 +190,8 @@ int init_resources()
 
   Data_Get_Struct(rb_a_program,
                   CDATA_mVismeit_cProgram,            cdata_a_program);
+  Data_Get_Struct(rb_b_program,
+                  CDATA_mVismeit_cProgram,            cdata_b_program);
   Data_Get_Struct(rb_coord3d_attrib,
                   CDATA_mVismeit_cAttrib,             cdata_coord3d_attrib);
   Data_Get_Struct(rb_v_color_attrib,
@@ -196,6 +206,7 @@ int init_resources()
                   CDATA_mVismeit_cElementArrayBuffer, cdata_cube_element_ibo);
 
   a_program         = cdata_a_program->gl_id;
+  b_program         = cdata_b_program->gl_id;
   attribute_coord3d = cdata_coord3d_attrib->gl_id;
   attribute_v_color = cdata_v_color_attrib->gl_id;
   uniform_mvp       = cdata_mvp_uniform->gl_id;
