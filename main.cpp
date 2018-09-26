@@ -224,15 +224,15 @@ int init_resources()
                   CDATA_mVismeit_cProgram,            cdata_b_program);
   Data_Get_Struct(rb_a_coord3d_attrib,
                   CDATA_mVismeit_cAttrib,             cdata_a_coord3d_attrib);
-  Data_Get_Struct(rb_a_coord3d_attrib,
+  Data_Get_Struct(rb_b_coord3d_attrib,
                   CDATA_mVismeit_cAttrib,             cdata_b_coord3d_attrib);
   Data_Get_Struct(rb_a_v_color_attrib,
                   CDATA_mVismeit_cAttrib,             cdata_a_v_color_attrib);
-  Data_Get_Struct(rb_a_v_color_attrib,
+  Data_Get_Struct(rb_b_v_color_attrib,
                   CDATA_mVismeit_cAttrib,             cdata_b_v_color_attrib);
   Data_Get_Struct(rb_a_mvp_uniform,
                   CDATA_mVismeit_cUniform,            cdata_a_mvp_uniform);
-  Data_Get_Struct(rb_a_mvp_uniform,
+  Data_Get_Struct(rb_b_mvp_uniform,
                   CDATA_mVismeit_cUniform,            cdata_b_mvp_uniform);
   Data_Get_Struct(rb_cube_vertex_vbo,
                   CDATA_mVismeit_cArrayBuffer,        cdata_cube_vertex_vbo);
