@@ -27,8 +27,8 @@ struct Color3fAttribute
 };
 
 static GLuint a_program, b_program;
-static GLint attribute_coord3d, attribute_v_color;
-static GLint uniform_mvp;
+static GLint coord3d_attribute, v_color_attribute;
+static GLint mvp_uniform;
 static GLuint vbo_cube_vertices, vbo_cube_colors;
 static GLuint ibo_cube_elements;
 
@@ -207,9 +207,9 @@ int init_resources()
 
   a_program         = cdata_a_program->gl_id;
   b_program         = cdata_b_program->gl_id;
-  attribute_coord3d = cdata_coord3d_attrib->gl_id;
-  attribute_v_color = cdata_v_color_attrib->gl_id;
-  uniform_mvp       = cdata_mvp_uniform->gl_id;
+  coord3d_attribute = cdata_coord3d_attrib->gl_id;
+  v_color_attribute = cdata_v_color_attrib->gl_id;
+  mvp_uniform       = cdata_mvp_uniform->gl_id;
   vbo_cube_vertices = cdata_cube_vertex_vbo->gl_id;
   vbo_cube_colors   = cdata_cube_color_vbo->gl_id;
   ibo_cube_elements = cdata_cube_element_ibo->gl_id;
@@ -234,13 +234,13 @@ void on_display()
 
   glUseProgram(a_program);
 
-  glEnableVertexAttribArray(attribute_coord3d);
-  glEnableVertexAttribArray(attribute_v_color);
+  glEnableVertexAttribArray(coord3d_attribute);
+  glEnableVertexAttribArray(v_color_attribute);
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo_cube_vertices);
 
   glVertexAttribPointer(
-    attribute_coord3d,
+    coord3d_attribute,
     3,
     GL_FLOAT,
     GL_FALSE,
@@ -251,7 +251,7 @@ void on_display()
   glBindBuffer(GL_ARRAY_BUFFER, vbo_cube_colors);
 
   glVertexAttribPointer(
-    attribute_v_color,
+    v_color_attribute,
     3,
     GL_FLOAT,
     GL_FALSE,
@@ -265,8 +265,8 @@ void on_display()
   glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
   glDrawElements(GL_TRIANGLES, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
 
-  glDisableVertexAttribArray(attribute_coord3d);
-  glDisableVertexAttribArray(attribute_v_color);
+  glDisableVertexAttribArray(coord3d_attribute);
+  glDisableVertexAttribArray(v_color_attribute);
 
   glutSwapBuffers();
 }
@@ -290,6 +290,6 @@ void on_idle()
   glm::mat4 mvp = projection * view * model * anim;
 
   glUseProgram(a_program);
-  glUniformMatrix4fv(uniform_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
+  glUniformMatrix4fv(mvp_uniform, 1, GL_FALSE, glm::value_ptr(mvp));
   glutPostRedisplay();
 }
