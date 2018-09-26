@@ -129,6 +129,7 @@ VALUE rb_mVismeit_cShader_initialize(
   const VALUE rb_source
 )
 {
+  Check_Type(rb_type,   T_SYMBOL);
   Check_Type(rb_source, T_STRING);
 
   GLenum gl_shader_type;
@@ -205,6 +206,11 @@ VALUE rb_mVismeit_cProgram_initialize(
   {
     const VALUE rb_shader = rb_ary_entry(rb_shaders, i);
 
+    if (!rb_funcall(rb_shader, rb_intern("is_a?"), 1, rb_mVismeit_cShader))
+    {
+      rb_raise(rb_eTypeError, "expected ::Vismeit::Shader");
+    }
+
     rb_ary_push(rb_ivar_shaders, rb_shader);
 
     CDATA_mVismeit_cShader *cdata_shader;
@@ -234,6 +240,11 @@ VALUE rb_mVismeit_cAttrib_initialize(
 {
   Check_Type(rb_name, T_STRING);
 
+  if (!rb_funcall(rb_program, rb_intern("is_a?"), 1, rb_mVismeit_cProgram))
+  {
+    rb_raise(rb_eTypeError, "expected ::Vismeit::Program");
+  }
+
   rb_ivar_set(rb_self, rb_intern("@program"), rb_program);
 
   CDATA_mVismeit_cAttrib *cdata_self;
@@ -261,6 +272,11 @@ VALUE rb_mVismeit_cUniform_initialize(
 )
 {
   Check_Type(rb_name, T_STRING);
+
+  if (!rb_funcall(rb_program, rb_intern("is_a?"), 1, rb_mVismeit_cProgram))
+  {
+    rb_raise(rb_eTypeError, "expected ::Vismeit::Program");
+  }
 
   rb_ivar_set(rb_self, rb_intern("@program"), rb_program);
 
