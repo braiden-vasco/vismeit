@@ -121,10 +121,10 @@ int init_resources()
   );
 
   const VALUE rb_program = rb_eval_string(
-    "Vismeit::Program.new([                                             \n"
-    "  Vismeit::Shader.new(:vertex_shader,   File.read('shader.vert')), \n"
-    "  Vismeit::Shader.new(:fragment_shader, File.read('shader.frag')), \n"
-    "])                                                                 \n"
+    "Vismeit::Program.new([                                                \n"
+    "  Vismeit::Shader.new(:vertex_shader,   File.read('sh/shader.vert')), \n"
+    "  Vismeit::Shader.new(:fragment_shader, File.read('sh/shader.frag')), \n"
+    "])                                                                    \n"
   );
 
   const VALUE rb_coord3d_attrib = rb_funcall(
