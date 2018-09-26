@@ -18,8 +18,8 @@ static int screen_height = initial_window_height;
 
 static int init_resources();
 
-static void on_display();
 static void on_reshape(int width, int height);
+static void on_display();
 
 int main(int argc, char* argv[]) {
   ruby_init();
@@ -40,14 +40,20 @@ int main(int argc, char* argv[]) {
   }
 
   if (init_resources()) {
-    glutDisplayFunc(on_display);
     glutReshapeFunc(on_reshape);
+    glutDisplayFunc(on_display);
 
     glutMainLoop();
   }
 
   ruby_cleanup(0);
   return 0;
+}
+
+void on_reshape(const int width, const int height)
+{
+  screen_width = width;
+  screen_height = height;
 }
 
 int init_resources()
@@ -71,10 +77,4 @@ void on_display()
   glDepthFunc(GL_LESS);
 
   glutSwapBuffers();
-}
-
-void on_reshape(const int width, const int height)
-{
-  screen_width = width;
-  screen_height = height;
 }
