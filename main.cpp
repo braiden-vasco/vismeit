@@ -154,24 +154,21 @@ int init_resources()
   const VALUE rb_cube_vertex_vbo = rb_funcall(
     rb_eval_string("Vismeit::ArrayBuffer"),
     rb_intern("new"),
-    2,
-    ID2SYM(rb_intern("array_buffer")),
+    1,
     rb_cube_vertex_attributes
   );
 
   const VALUE rb_cube_color_vbo = rb_funcall(
     rb_eval_string("Vismeit::ArrayBuffer"),
     rb_intern("new"),
-    2,
-    ID2SYM(rb_intern("array_buffer")),
+    1,
     rb_cube_color_attributes
   );
 
   const VALUE rb_cube_element_ibo = rb_funcall(
     rb_eval_string("Vismeit::ElementArrayBuffer"),
     rb_intern("new"),
-    2,
-    ID2SYM(rb_intern("element_array_buffer")),
+    1,
     rb_cube_elements
   );
 
