@@ -6,6 +6,9 @@ OBJS = main.o ext.o
 all: $(OBJS)
 	cc $(OBJS) $(LIBS)
 
+clean:
+	rm -f a.out $(OBJS)
+
 main.o: main.cpp
 	cc -c main.cpp -o main.o $(CFLAGS)
 

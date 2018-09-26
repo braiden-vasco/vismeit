@@ -28,6 +28,10 @@ typedef struct {
   GLuint gl_id;
 } CDATA_mVismeit_cArrayBuffer;
 
+typedef struct {
+  GLuint gl_id;
+} CDATA_mVismeit_cElementArrayBuffer;
+
 extern void Init_vismeit();
 
 #ifdef __cplusplus
