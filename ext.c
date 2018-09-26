@@ -133,12 +133,13 @@ VALUE rb_mVismeit_cShader_initialize(
 
   GLenum gl_shader_type;
 
-  if (rb_funcall(rb_type, rb_intern("=="), 1, ID2SYM(rb_intern("vertex"))))
+  if (rb_funcall(rb_type, rb_intern("=="), 1,
+                 ID2SYM(rb_intern("vertex_shader"))))
   {
     gl_shader_type = GL_VERTEX_SHADER;
   }
   else if (rb_funcall(rb_type, rb_intern("=="), 1,
-                      ID2SYM(rb_intern("fragment"))))
+                      ID2SYM(rb_intern("fragment_shader"))))
   {
     gl_shader_type = GL_FRAGMENT_SHADER;
   }
