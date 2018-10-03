@@ -26,11 +26,9 @@ struct Color3fAttribute
   GLfloat r, g, b;
 };
 
-static GLuint a_program, b_program;
+static GLuint a_program;
 static GLint a_coord3d_attribute, a_v_color_attribute;
-static GLint b_coord3d_attribute, b_v_color_attribute;
 static GLint a_mvp_uniform;
-static GLint b_mvp_uniform;
 
 static GLuint vbo_cube_vertices, vbo_cube_colors;
 static GLuint ibo_cube_elements;
@@ -130,26 +128,11 @@ int init_resources()
     "])                                                               \n"
   );
 
-  const VALUE rb_b_program = rb_eval_string(
-    "Vismeit::Program.new([                                           \n"
-    "  Vismeit::Shader.new(:vertex_shader,   File.read('sh/b.vert')), \n"
-    "  Vismeit::Shader.new(:fragment_shader, File.read('sh/b.frag')), \n"
-    "])                                                               \n"
-  );
-
   const VALUE rb_a_coord3d_attrib = rb_funcall(
     rb_eval_string("Vismeit::Attrib"),
     rb_intern("new"),
     2,
     rb_a_program,
-    rb_str_new_cstr("coord3d")
-  );
-
-  const VALUE rb_b_coord3d_attrib = rb_funcall(
-    rb_eval_string("Vismeit::Attrib"),
-    rb_intern("new"),
-    2,
-    rb_b_program,
     rb_str_new_cstr("coord3d")
   );
 
@@ -161,27 +144,11 @@ int init_resources()
     rb_str_new_cstr("v_color")
   );
 
-  const VALUE rb_b_v_color_attrib = rb_funcall(
-    rb_eval_string("Vismeit::Attrib"),
-    rb_intern("new"),
-    2,
-    rb_b_program,
-    rb_str_new_cstr("v_color")
-  );
-
   const VALUE rb_a_mvp_uniform = rb_funcall(
     rb_eval_string("Vismeit::Uniform"),
     rb_intern("new"),
     2,
     rb_a_program,
-    rb_str_new_cstr("mvp")
-  );
-
-  const VALUE rb_b_mvp_uniform = rb_funcall(
-    rb_eval_string("Vismeit::Uniform"),
-    rb_intern("new"),
-    2,
-    rb_b_program,
     rb_str_new_cstr("mvp")
   );
 
@@ -207,33 +174,21 @@ int init_resources()
   );
 
   CDATA_mVismeit_cProgram            *cdata_a_program;
-  CDATA_mVismeit_cProgram            *cdata_b_program;
   CDATA_mVismeit_cAttrib             *cdata_a_coord3d_attrib;
-  CDATA_mVismeit_cAttrib             *cdata_b_coord3d_attrib;
   CDATA_mVismeit_cAttrib             *cdata_a_v_color_attrib;
-  CDATA_mVismeit_cAttrib             *cdata_b_v_color_attrib;
   CDATA_mVismeit_cUniform            *cdata_a_mvp_uniform;
-  CDATA_mVismeit_cUniform            *cdata_b_mvp_uniform;
   CDATA_mVismeit_cArrayBuffer        *cdata_cube_vertex_vbo;
   CDATA_mVismeit_cArrayBuffer        *cdata_cube_color_vbo;
   CDATA_mVismeit_cElementArrayBuffer *cdata_cube_element_ibo;
 
   Data_Get_Struct(rb_a_program,
                   CDATA_mVismeit_cProgram,            cdata_a_program);
-  Data_Get_Struct(rb_b_program,
-                  CDATA_mVismeit_cProgram,            cdata_b_program);
   Data_Get_Struct(rb_a_coord3d_attrib,
                   CDATA_mVismeit_cAttrib,             cdata_a_coord3d_attrib);
-  Data_Get_Struct(rb_b_coord3d_attrib,
-                  CDATA_mVismeit_cAttrib,             cdata_b_coord3d_attrib);
   Data_Get_Struct(rb_a_v_color_attrib,
                   CDATA_mVismeit_cAttrib,             cdata_a_v_color_attrib);
-  Data_Get_Struct(rb_b_v_color_attrib,
-                  CDATA_mVismeit_cAttrib,             cdata_b_v_color_attrib);
   Data_Get_Struct(rb_a_mvp_uniform,
                   CDATA_mVismeit_cUniform,            cdata_a_mvp_uniform);
-  Data_Get_Struct(rb_b_mvp_uniform,
-                  CDATA_mVismeit_cUniform,            cdata_b_mvp_uniform);
   Data_Get_Struct(rb_cube_vertex_vbo,
                   CDATA_mVismeit_cArrayBuffer,        cdata_cube_vertex_vbo);
   Data_Get_Struct(rb_cube_color_vbo,
@@ -242,13 +197,9 @@ int init_resources()
                   CDATA_mVismeit_cElementArrayBuffer, cdata_cube_element_ibo);
 
   a_program           = cdata_a_program->gl_id;
-  b_program           = cdata_b_program->gl_id;
   a_coord3d_attribute = cdata_a_coord3d_attrib->gl_id;
-  b_coord3d_attribute = cdata_b_coord3d_attrib->gl_id;
   a_v_color_attribute = cdata_a_v_color_attrib->gl_id;
-  b_v_color_attribute = cdata_b_v_color_attrib->gl_id;
   a_mvp_uniform       = cdata_a_mvp_uniform->gl_id;
-  b_mvp_uniform       = cdata_b_mvp_uniform->gl_id;
   vbo_cube_vertices   = cdata_cube_vertex_vbo->gl_id;
   vbo_cube_colors     = cdata_cube_color_vbo->gl_id;
   ibo_cube_elements   = cdata_cube_element_ibo->gl_id;
@@ -274,13 +225,8 @@ void on_idle()
 
   glm::mat4 mvp = projection * view * model * anim;
 
-  glm::mat4 mvp2 = mvp * glm::translate(glm::mat4(1.0f), glm::vec3(-0.5, -1.0, -0.5));
-
   glUseProgram(a_program);
   glUniformMatrix4fv(a_mvp_uniform, 1, GL_FALSE, glm::value_ptr(mvp));
-
-  glUseProgram(b_program);
-  glUniformMatrix4fv(b_mvp_uniform, 1, GL_FALSE, glm::value_ptr(mvp2));
 
   glutPostRedisplay();
 }
@@ -330,38 +276,6 @@ void on_display()
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_cube_elements);
 
   int size;
-  glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
-  glDrawElements(GL_TRIANGLES, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
-
-  glUseProgram(b_program);
-
-  glEnableVertexAttribArray(b_coord3d_attribute);
-  glEnableVertexAttribArray(b_v_color_attribute);
-
-  glBindBuffer(GL_ARRAY_BUFFER, vbo_cube_vertices);
-
-  glVertexAttribPointer(
-    b_coord3d_attribute,
-    3,
-    GL_FLOAT,
-    GL_FALSE,
-    0,
-    0
-  );
-
-  glBindBuffer(GL_ARRAY_BUFFER, vbo_cube_colors);
-
-  glVertexAttribPointer(
-    b_v_color_attribute,
-    3,
-    GL_FLOAT,
-    GL_FALSE,
-    0,
-    0
-  );
-
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_cube_elements);
-
   glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
   glDrawElements(GL_TRIANGLES, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
 
